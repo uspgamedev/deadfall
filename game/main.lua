@@ -24,3 +24,25 @@ function love.update( dt )
 		b:update(dt)
 	end
 end
+require 'lux.object'
+require 'base.geom.vector'
+require 'base.body'
+require 'base.properties.moveable'
+require 'base.properties.visible'
+require 'lux.functional'
+
+function love.load()
+
+end
+
+function love.mousepressed(x, y, button)
+
+end
+
+function love.draw()
+
+end
+
+function love.update(dt)
+
+end

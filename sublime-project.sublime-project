@@ -12,7 +12,7 @@
 		{
 			"name": "Deadfall",
 			"working_dir": "${project_path}",
-			"cmd": ["love", "game"]
+			"cmd": ["love", "--console", "game"]
 		}
 	]
 }
