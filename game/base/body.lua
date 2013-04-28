@@ -1,38 +1,29 @@
-module("base.body", package.seeall)
+module("base", package.seeall)
 
-require 'base.geom.vector'
+require 'vector'
 require 'lux.object'
-require 'lux.functional'
 
-local _BODIES = {}
+local bodies = {}
 
 body = lux.object.new {
-	pos = base.geom.vector(),
-	bounds = base.geom.vector(),
-	angle=0
+	position = vector:new{},
+	size 	 = vector:new{},
+	speed	 = vector:new{}
 }
 
-function body:__call(pos, bounds, angle)
-	local b = body.new {
-		pos=pos or base.geom.vector()
-		bounds=bounds or base.geom.vector(),
-		angle=angle or 0
-	}
-	table.insert(_BODIES, b)
+function body:register()
+	table.insert(bodies, self)
+	return self
 end
 
-function body:lookat(direction)
-	
+function body.getAll()
+	return bodies
 end
 
-function body.register(_body)
-	table.insert(_BODIES, _body)
-end
-function body.remove(_body)
-	local index = nil
-	for i,v in ipairs(_BODIES) do
-		if v==_body then index = i end
-	end
-	table.remove(_BODIES, index)
+function body:update( dt )
+	self.position = self.position + self.speed * dt
 end
 
+function body:draw()
+	-- abstract
+end
