@@ -5,5 +5,5 @@ character = base.body:new {
 }
 
 function character:draw()
-	love.graphics.circle( self.mode, self.position[1], self.position[2], self.radius or self.size[1])
+	love.graphics.circle( self.mode, self.x, self.y, self.radius or self.width)
 end
