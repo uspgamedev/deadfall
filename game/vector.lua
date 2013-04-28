@@ -111,3 +111,11 @@ end
 function vector:unpack()
 	return self[1], self[2]
 end
+
+function vector:length()
+	return math.sqrt(self[1]^2 + self[2]^2)
+end
+
+function vector:normalized()
+	return self/self:length()
+end
