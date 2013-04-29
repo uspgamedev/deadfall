@@ -109,9 +109,9 @@ function vector:set(x, y)
 end
 
 function vector:add(x, y)
-	if y then
-		self[1] = self[1] + x
-		self[2] = self[2] + y
+	if x==nil or type(x)=='number' then
+		self[1] = self[1] + (x or 0)
+		self[2] = self[2] + (y or 0)
 	else
 		self[1] = self[1] + x[1]
 		self[2] = self[2] + x[2]
@@ -119,33 +119,54 @@ function vector:add(x, y)
 end
 
 function vector:sub(x, y)
-	if y then
-		self:add(-x, -y)
+	if x==nil or type(x)=='number' then
+		self[1] = self[1] - (x or 0)
+		self[2] = self[2] - (y or 0)
 	else
-		self:add(-x[1], -x[2])
+		self[1] = self[1] - x[1]
+		self[2] = self[2] - x[2]
+	end
+end
+
+function vector:mult( x, y )
+	if x==nil or type(x)=='number' then
+		self[1] = self[1] * (x or 1)
+		self[2] = self[2] * (y or 1)
+	else
+		self[1] = self[1] * x[1]
+		self[2] = self[2] * x[2]
+	end
+end
+
+function vector:div( x, y )
+	if x==nil or type(x)=='number' then
+		self[1] = self[1] / (x or 1)
+		self[2] = self[2] / (y or 1)
+	else
+		self[1] = self[1] / x[1]
+		self[2] = self[2] / x[2]
+	end
+end
+
+
+function vector:equals(x, y)
+	if y then
+		return (self[1] == x) and (self[2] == y)
+	else
+		return (self[1] == x[1]) and (self[2] == x[2])
+	end
+end
+
+function vector:distsqr(x, y)
+	if y then
+		return (self[1]-x)^2 + (self[2]-y)^2
+	else
+		return (self[1]-x[1])^2 + (self[2]-x[2])^2
 	end
 end
 
 function vector:dist(x, y)
-	if y then
-		return vector:dist{x, y}
-	else
-		local dx = self[1]-x[1]
-		local dy = self[2]-x[2]
-		return dx*dx+dy*dy
-	end
-end
-
-function vector:equals(x, y)
-	if y then
-		return vector:equals{x, y}
-	else
-		return self[1]==x[1] and self[2]==x[2]
-	end
-end
-
-function vector:distSqrt(x, y)
-	return vector:dist(x, y)
+	return math.sqrt(self:distsqr(x,y))
 end
 
 function vector:unpack()
