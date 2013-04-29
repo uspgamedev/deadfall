@@ -6,100 +6,89 @@ require 'lux.object'
 
 local selected = {}
 
-local position  = nil
-local size 	 	= vector:new{}
-local color	 	= {0, 55, 200, 150}
-local marker 	= nil
+local clickposition  = nil -- rename this variable
+local size 	 		 = vector:new{}
+local outerrectcolor = {0, 55, 200, 230}
+local innerrectcolor = {0, 55, 200,  60}
+local linecolor		 = outerrectcolor
 
 function draw()
-	local r, g, b, a = love.graphics.getColor()
-	love.graphics.setColor(unpack(color))
-	
-	if position then
-		love.graphics.rectangle('fill', position[1], position[2], size[1], size[2])
-	end
-	if marker then
-		love.graphics.setColor(255, 0, 0)
-		love.graphics.circle('fill', marker.x, marker.y, 5, 50)
-		love.graphics.setColor(unpack(color))
+	if clickposition then
+		love.graphics.setColor(innerrectcolor)
+		love.graphics.rectangle('fill', clickposition[1], clickposition[2], size[1], size[2])
+		love.graphics.setColor(outerrectcolor)
+		love.graphics.rectangle('line', clickposition[1], clickposition[2], size[1], size[2])
 	end
 
+	love.graphics.setColor(linecolor)
 	for _,v in pairs(selected) do
-		love.graphics.rectangle('line', v.position.x-v.radius-4, v.position.y-v.radius-4, 
-			2*v.radius+8, 2*v.radius+8)
+		love.graphics.rectangle('line', v.x - 4, v.y - 4, v.width + 8, v.height + 8)
 	end
-
-	love.graphics.setColor(r, g, b, a)
 end
 
 function mousepressed(x, y, button)
-	if button=='l' then
+	local pos = vector:new{x, y}
+	if button == 'l' then
 		clear()
-		position=vector:new{x, y}
-	elseif button=='r' then
-		marker = vector:new{x, y}
+		clickposition = pos
+	elseif button == 'r' and #selected>0 then
 		for _,v in pairs(selected) do
-			v:move_to(marker)
+			v:move_to(pos)
 		end
 	end
 end
+
 function mousereleased(x, y, button)
-	if not position then return end
+	if not clickposition then return end
 	if button=='l' then
 		local bodies = base.body.getAll()
-		local centerX, centerY
+		
+		if size.x < 5 and size.y < 5 then
+			for _,b in ipairs(bodies) do
+				if b:ispointinside(clickposition) then
+					register(b)
+				end
+			end
+		else 
+			local topX, topY, bottomX, bottomY = 
+				size.x > 0 and clickposition.x + size.x or clickposition.x,
+				size.y > 0 and clickposition.y + size.y or clickposition.y,
+				size.x < 0 and clickposition.x + size.x or clickposition.x,
+				size.y < 0 and clickposition.y + size.y or clickposition.y
 
-		local topX, topY, bottomX, bottomY
+			local centerX, centerY
+			for _,b in ipairs(bodies) do
+				centerX = b.centerX
+				centerY = b.centerY
 
-		if position.x > position.x+size.x then
-			topX = position.x
-			bottomX = position.x + size.x
-		else
-			topX = position.x + size.x
-			bottomX = position.x
-		end if position.y > position.y+size.y then
-			topY = position.y
-			bottomY = position.y + size.y
-		else
-			topY = position.y + size.y
-			bottomY = position.y
-		end
-
-		for _,v in pairs(bodies) do
-			centerX = v.position.x + v.size.x/2
-			centerY = v.position.y + v.size.y/2
-
-			if centerX>=bottomX and centerX<=topX then
-				if centerY>=bottomY and centerY<=topY then
-					register(v)
+				if centerX>=bottomX and centerX<=topX then
+					if centerY>=bottomY and centerY<=topY then
+						register(b)
+					end
 				end
 			end
 		end
-		position=nil
+		clickposition=nil
 	end
 end
 
 function update(dt)
-	if marker then
-		for _,v in pairs(selected) do
-			if not v.target then marker = nil end
-		end
-	end
-
-	if not position then return end
-	size:set(love.mouse.getX()-position[1], love.mouse.getY()-position[2])
+	if not clickposition then return end
+	size:set(love.mouse.getX()-clickposition[1], love.mouse.getY()-clickposition[2])
 end
 
 function register(body)
 	table.insert(selected, body)
 end
+
 function remove(body)
 	local index
 	for i,v in pairs(selected) do
-		if v==body then index=i end
+		if v==body then index=i break end
 	end
 	table.remove(selected, index)
 end
+
 function clear()
 	for k in pairs(selected) do
 		selected[k] = nil
