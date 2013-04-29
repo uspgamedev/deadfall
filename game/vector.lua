@@ -99,9 +99,9 @@ function vector.__div( first, second )
 end
 
 function vector:set(x, y)
-	if x == nil or type(x) == 'number' then
-		self[1] = x or self[1]
-		self[2] = y or self[2]
+	if y then
+		self[1] = x
+		self[2] = y
 	else
 		self[1] = x[1]
 		self[2] = x[2]
@@ -142,6 +142,10 @@ function vector:equals(x, y)
 	else
 		return self[1]==x[1] and self[2]==x[2]
 	end
+end
+
+function vector:copy()
+	return vector:new{self.x, self.y}
 end
 
 function vector:distSqrt(x, y)
