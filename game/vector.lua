@@ -126,6 +126,28 @@ function vector:sub(x, y)
 	end
 end
 
+function vector:dist(x, y)
+	if y then
+		return vector:dist{x, y}
+	else
+		local dx = self[1]-x[1]
+		local dy = self[2]-x[2]
+		return dx*dx+dy*dy
+	end
+end
+
+function vector:equals(x, y)
+	if y then
+		return vector:equals{x, y}
+	else
+		return self[1]==x[1] and self[2]==x[2]
+	end
+end
+
+function vector:distSqrt(x, y)
+	return vector:dist(x, y)
+end
+
 function vector:unpack()
 	return self[1], self[2]
 end

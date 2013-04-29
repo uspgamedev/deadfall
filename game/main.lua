@@ -8,7 +8,7 @@ local bodies
 function love.load()
 	bodies = base.body.getAll()
 
-	character:new { 
+	local c = character:new { 
 		radius = 30,
 		position = vector:new{100,400},
 		speed = vector:new{15,-30}

@@ -9,6 +9,7 @@ local _SELECTED = {}
 local position  = nil
 local size 	 	= vector:new{}
 local color	 	= {0, 55, 200, 150}
+local marker 	= nil
 
 function draw()
 	local r, g, b, a = love.graphics.getColor()
@@ -17,10 +18,15 @@ function draw()
 	if position then
 		love.graphics.rectangle('fill', position[1], position[2], size[1], size[2])
 	end
+	if marker then
+		love.graphics.setColor(255, 0, 0)
+		love.graphics.circle('fill', marker.x, marker.y, 5, 50)
+		love.graphics.setColor(unpack(color))
+	end
 
 	for _,v in pairs(_SELECTED) do
-		love.graphics.rectangle('line', v.position.x-v.size.x-2, v.position.y-v.size.y-2, 
-			v.size.x+4, v.size.y+4)
+		love.graphics.rectangle('line', v.position.x-v.radius-4, v.position.y-v.radius-4, 
+			2*v.radius+8, 2*v.radius+8)
 	end
 
 	love.graphics.setColor(r, g, b, a)
@@ -30,6 +36,11 @@ function mousepressed(x, y, button)
 	if button=='l' then
 		clear()
 		position=vector:new{x, y}
+	elseif button=='r' then
+		marker = vector:new{x, y}
+		for _,v in pairs(_SELECTED) do
+			v:move_to(marker)
+		end
 	end
 end
 function mousereleased(x, y, button)
@@ -69,6 +80,12 @@ function mousereleased(x, y, button)
 end
 
 function update(dt)
+	if marker then
+		for _,v in pairs(_SELECTED) do
+			if not v.target then marker = nil end
+		end
+	end
+
 	if not position then return end
 	size:set(love.mouse.getX()-position[1], love.mouse.getY()-position[2])
 end

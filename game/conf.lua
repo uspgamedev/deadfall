@@ -1,6 +1,6 @@
 function love.conf(t)
   t.title   = "Deadfall"
-  t.version = "0.0.1"
+  --t.version = "0.0.1"
   t.console = true
   t.release = false
 
