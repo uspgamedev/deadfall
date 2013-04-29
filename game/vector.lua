@@ -108,6 +108,24 @@ function vector:set(x, y)
 	end
 end
 
+function vector:add(x, y)
+	if y then
+		self[1] = self[1] + x
+		self[2] = self[2] + y
+	else
+		self[1] = self[1] + x[1]
+		self[2] = self[2] + x[2]
+	end
+end
+
+function vector:sub(x, y)
+	if y then
+		self:add(-x, -y)
+	else
+		self:add(-x[1], -x[2])
+	end
+end
+
 function vector:unpack()
 	return self[1], self[2]
 end
