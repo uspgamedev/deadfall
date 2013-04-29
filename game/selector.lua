@@ -4,7 +4,7 @@ require 'vector'
 require 'base.body'
 require 'lux.object'
 
-local _SELECTED = {}
+local selected = {}
 
 local position  = nil
 local size 	 	= vector:new{}
@@ -24,7 +24,7 @@ function draw()
 		love.graphics.setColor(unpack(color))
 	end
 
-	for _,v in pairs(_SELECTED) do
+	for _,v in pairs(selected) do
 		love.graphics.rectangle('line', v.position.x-v.radius-4, v.position.y-v.radius-4, 
 			2*v.radius+8, 2*v.radius+8)
 	end
@@ -38,7 +38,7 @@ function mousepressed(x, y, button)
 		position=vector:new{x, y}
 	elseif button=='r' then
 		marker = vector:new{x, y}
-		for _,v in pairs(_SELECTED) do
+		for _,v in pairs(selected) do
 			v:move_to(marker)
 		end
 	end
@@ -81,7 +81,7 @@ end
 
 function update(dt)
 	if marker then
-		for _,v in pairs(_SELECTED) do
+		for _,v in pairs(selected) do
 			if not v.target then marker = nil end
 		end
 	end
@@ -91,17 +91,17 @@ function update(dt)
 end
 
 function register(body)
-	table.insert(_SELECTED, body)
+	table.insert(selected, body)
 end
 function remove(body)
 	local index
-	for i,v in pairs(_SELECTED) do
+	for i,v in pairs(selected) do
 		if v==body then index=i end
 	end
-	table.remove(_SELECTED, index)
+	table.remove(selected, index)
 end
 function clear()
-	for k in pairs(_SELECTED) do
-		_SELECTED[k] = nil
+	for k in pairs(selected) do
+		selected[k] = nil
 	end
 end

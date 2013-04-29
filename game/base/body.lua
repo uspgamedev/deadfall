@@ -6,14 +6,15 @@ require 'lux.object'
 local bodies = {}
 
 body = lux.object.new {
-	position = vector:new{},
 	target	 = nil,
-	size 	 = vector:new{},
-	speed	 = vector:new{},
 	angle	 = 0
 }
 
-body.__init = {}
+body.__init = {
+	position = vector:new{},
+	 size 	 = vector:new{},
+	speed	 = vector:new{}
+}
 
 function body.__init:__index( key )
 	if key == 'x' then return self.position[1]
@@ -40,8 +41,9 @@ end
 
 function body:move_to(target)
 	self:look_at(target)
-	self.speed:set(math.cos(self.angle)*200, math.sin(self.angle)*200)
+	self.speed = vector:new{math.cos(self.angle)*200, math.sin(self.angle)*200}
 	self.target = target
+	print(self.speed)
 end
 
 function body:register()
@@ -56,9 +58,9 @@ end
 function body:update( dt )
 	if not self.target then return end
 
-	self.position = self.position + self.speed * dt
+	self.position:add(self.speed*dt)
 
-	if math.floor(self.target:dist(self.position))<=9 then self.target = nil end 
+	if self.target:dist(self.position)<=9 then self.target = nil end 
 end
 
 function body:draw()
