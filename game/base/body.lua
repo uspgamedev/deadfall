@@ -48,7 +48,7 @@ function body:look_at(direction)
 end
 
 function body:move_to(target)
-	--self:look_at(target)
+	self:look_at(target)
 	--self.speed = vector:new{math.cos(self.angle)*200, math.sin(self.angle)*200}
 	self.speed = (target - {self.centerX,self.centerY}):normalized() * 200
 	self.target = target
@@ -75,7 +75,7 @@ function body:draw()
 	-- abstract
 end
 
-function body:ispointinside( p )
+function body:is_inside( p )
 	if p.x < self.x then return false end
 	if p.y < self.y then return false end
 	if p.x > self.x + self.width  then return false end

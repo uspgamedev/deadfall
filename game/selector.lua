@@ -6,21 +6,21 @@ require 'lux.object'
 
 local selected = {}
 
-local clickposition  = nil -- rename this variable
-local size 	 		 = vector:new{}
-local outerrectcolor = {0, 55, 200, 230}
-local innerrectcolor = {0, 55, 200,  60}
-local linecolor		 = outerrectcolor
+local click_pos  	= nil
+local size 	 		= vector:new{}
+local outer_color 	= {0, 55, 200, 230}
+local inner_color 	= {0, 55, 200,  60}
+local line_color	= outer_color
 
 function draw()
-	if clickposition then
-		love.graphics.setColor(innerrectcolor)
-		love.graphics.rectangle('fill', clickposition[1], clickposition[2], size[1], size[2])
-		love.graphics.setColor(outerrectcolor)
-		love.graphics.rectangle('line', clickposition[1], clickposition[2], size[1], size[2])
+	if click_pos then
+		love.graphics.setColor(inner_color)
+		love.graphics.rectangle('fill', click_pos[1], click_pos[2], size[1], size[2])
+		love.graphics.setColor(outer_color)
+		love.graphics.rectangle('line', click_pos[1], click_pos[2], size[1], size[2])
 	end
 
-	love.graphics.setColor(linecolor)
+	love.graphics.setColor(line_color)
 	for _,v in pairs(selected) do
 		love.graphics.rectangle('line', v.x - 4, v.y - 4, v.width + 8, v.height + 8)
 	end
@@ -29,8 +29,8 @@ end
 function mousepressed(x, y, button)
 	local pos = vector:new{x, y}
 	if button == 'l' then
-		clear()
-		clickposition = pos
+		click_pos = pos
+		if not love.keyboard.isDown('lshift') then clear() end
 	elseif button == 'r' and #selected>0 then
 		for _,v in pairs(selected) do
 			v:move_to(pos)
@@ -39,22 +39,23 @@ function mousepressed(x, y, button)
 end
 
 function mousereleased(x, y, button)
-	if not clickposition then return end
+	if not click_pos then return end
 	if button=='l' then
 		local bodies = base.body.getAll()
-		
+
 		if size.x < 5 and size.y < 5 then
 			for _,b in ipairs(bodies) do
-				if b:ispointinside(clickposition) then
-					register(b)
+				if b:is_inside(click_pos) then
+					action = contains(b) and remove or register
+					action(b)
 				end
 			end
 		else 
 			local topX, topY, bottomX, bottomY = 
-				size.x > 0 and clickposition.x + size.x or clickposition.x,
-				size.y > 0 and clickposition.y + size.y or clickposition.y,
-				size.x < 0 and clickposition.x + size.x or clickposition.x,
-				size.y < 0 and clickposition.y + size.y or clickposition.y
+				size.x > 0 and click_pos.x + size.x or click_pos.x,
+				size.y > 0 and click_pos.y + size.y or click_pos.y,
+				size.x < 0 and click_pos.x + size.x or click_pos.x,
+				size.y < 0 and click_pos.y + size.y or click_pos.y
 
 			local centerX, centerY
 			for _,b in ipairs(bodies) do
@@ -63,30 +64,41 @@ function mousereleased(x, y, button)
 
 				if centerX>=bottomX and centerX<=topX then
 					if centerY>=bottomY and centerY<=topY then
-						register(b)
+						action = contains(b) and remove or register
+						action(b)
 					end
 				end
 			end
 		end
-		clickposition=nil
+		click_pos=nil
 	end
 end
 
 function update(dt)
-	if not clickposition then return end
-	size:set(love.mouse.getX()-clickposition[1], love.mouse.getY()-clickposition[2])
+	if not click_pos then return end
+	size:set(love.mouse.getX()-click_pos[1], love.mouse.getY()-click_pos[2])
 end
 
 function register(body)
-	table.insert(selected, body)
+	if not contains(body) then
+		table.insert(selected, body)
+	end
+end
+
+function contains(body)
+	for _,v in pairs(selected) do
+		if v==body then return true end
+	end
+	return false
 end
 
 function remove(body)
-	local index
 	for i,v in pairs(selected) do
-		if v==body then index=i break end
+		if v==body then
+			table.remove(selected, i)
+			return 
+		end
 	end
-	table.remove(selected, index)
 end
 
 function clear()
