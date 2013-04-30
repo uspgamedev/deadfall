@@ -2,6 +2,7 @@ require 'vector'
 require 'character'
 require 'base.body'
 require 'selector'
+require 'camera'
 
 local bodies
 
@@ -27,16 +28,22 @@ end
 
 function love.mousepressed(x, y, button)
 	selector.mousepressed(x, y, button)
+	camera.mousepressed(x, y, button)
 end
 function love.mousereleased(x, y, button)
 	selector.mousereleased(x, y, button)
+	camera.mousereleased(x, y, button)
 end
 
 function love.draw()
+	camera.set()
+
 	for _,b in ipairs(bodies) do
 		b:draw()
 	end
 	selector.draw()
+
+	camera.unset()
 end
 
 function love.update(dt)

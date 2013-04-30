@@ -3,6 +3,7 @@ module("selector", package.seeall)
 require 'vector'
 require 'base.body'
 require 'lux.object'
+require 'camera'
 
 local selected = {}
 
@@ -27,7 +28,7 @@ function draw()
 end
 
 function mousepressed(x, y, button)
-	local pos = vector:new{x, y}
+	local pos = camera.getPosition()
 	if button == 'l' then
 		click_pos = pos
 		if not love.keyboard.isDown('lshift') then clear() end
@@ -76,7 +77,7 @@ end
 
 function update(dt)
 	if not click_pos then return end
-	size:set(love.mouse.getX()-click_pos[1], love.mouse.getY()-click_pos[2])
+	size:set(camera.getPosition():sub(click_pos))
 end
 
 function register(body)
