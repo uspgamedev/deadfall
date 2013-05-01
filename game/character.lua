@@ -1,7 +1,7 @@
 require 'base.body'
 
 character = base.body:new {
-	mode	= 'fill'
+	mode = 'fill'
 }
 
 function character:__init()

@@ -1,6 +1,7 @@
 require 'vector'
 require 'character'
 require 'base.body'
+require 'base.timer'
 require 'selector'
 require 'camera'
 
@@ -24,6 +25,11 @@ function love.load()
 		position = vector:new{400, 100}
 	}:register()
 
+	base.timer:new {
+		dt = 2.50,
+		format = base.timer.formats.s,
+		event = function() c:move_to(vector:new{400, 300}) end
+	}:register()
 end
 
 function love.mousepressed(x, y, button)
@@ -52,6 +58,7 @@ function love.update(dt)
 	for _,b in pairs(bodies) do
 		b:update(dt)
 	end
+	base.timer.update(dt)
 
 	selector.update(dt)
 end

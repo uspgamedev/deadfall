@@ -12,7 +12,7 @@ body = lux.object.new {
 
 body.__init = {
 	position = vector:new{},
-	 size 	 = vector:new{},
+	size 	 = vector:new{},
 	speed	 = vector:new{}
 }
 
@@ -40,9 +40,14 @@ function body.__init:__newindex( key, v )
 	else rawset(self,key,v) end
 end
 
-function body:look_at(direction)
-	local dx = direction.x - self.centerX
-	local dy = direction.y - self.centerY
+function body:look_at(x, y)
+	if not y then 
+		self:look_at(x:unpack()) 
+		return 
+	end
+	
+	local dx = x - self.centerX
+	local dy = y - self.centerY
 	self.angle = math.atan2(dy, dx)
 	return self.angle
 end
@@ -68,7 +73,10 @@ function body:update( dt )
 
 	self.position:add(self.speed*dt)
 
-	if self.target:distsqr(self.centerX,self.centerY)<=9 then self.target = nil end 
+	if self.target:distsqr(self.centerX,self.centerY)<=9 then 
+		if self.target[3] then self.look_at(self.target[3], self.target[4]) end
+		self.target = nil 
+	end 
 end
 
 function body:draw()
