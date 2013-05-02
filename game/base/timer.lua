@@ -1,14 +1,15 @@
 module('base', package.seeall)
 
 require 'lux.object'
-require 'lux.functional'
 
 local timers = {}
 
 timer = lux.object.new {
 	time 	= 0,
-	dt 		= nil,
-	format	= nil,
+	dt 		= 1,
+	format	= 1,
+	running = true,
+	repeats = true,
 	event	= nil
 }
 
@@ -16,20 +17,20 @@ timer.formats = {
 	ms 	 	= 0.001,
 	secs 	= 1,
 	mins 	= 60,
-	hours	= 360
+	hours	= 3600
 }
 
 -- Initializes the timer with the corresponding format.
 function timer:__init()
 	self.dt = self.dt*self.format
+	self:register()
 end
 
 -- Resets timer to the given delta time.
 function timer:set(dt, format, time, action)
-	self:reset()
-	self.time = time or self.time
+	self.time = time or 0
 	self.dt = dt*format
-	self.format = format or self.formats.s
+	self.format = format or self.format
 	self.event = action or self.event
 end
 
@@ -46,12 +47,12 @@ end
 
 -- Starts the timer from its current state by registering to table.
 function timer:start()
-	self:register()
+	self.running = true
 end
 
 -- Pauses the timer.
 function timer:pause()
-	self:remove()
+	self.running = false
 end
 
 -- Pauses and resets the timer.
@@ -61,32 +62,27 @@ function timer:stop()
 end
 
 function timer:intern_update(dt)
+	if not self.running then return end
 	self.time = self.time + dt
 	if self.time >= self.dt then
-		self:stop()
-		self.event()
+		self.time = self.time - self.dt
+		if self.event then self.event() end
+		if not self.repeats then 
+			self:stop()
+			self:remove()
+		end
 	end
 end
 
-function timer.contains(tm)
-	for _,v in pairs(timers) do
-		if v==tm then return true end
-	end
-	return false
-end
 function timer:register()
-	if not self.contains(self) then
-		table.insert(timers, self)
-	end
+	timers[self] = true
 end
 function timer:remove()
-	for i,v in pairs(timers) do
-		if v==self then table.remove(timers, i) end
-	end
+	timers[self] = nil
 end
 
 function timer.update(dt)
-	for _,v in pairs(timers) do
-		v:intern_update(dt)
+	for timer,_ in pairs(timers) do
+		timer:intern_update(dt)
 	end
 end

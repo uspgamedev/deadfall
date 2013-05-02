@@ -27,9 +27,9 @@ function love.load()
 
 	base.timer:new {
 		dt = 2.50,
-		format = base.timer.formats.s,
+		repeats = false,
 		event = function() c:move_to(vector:new{400, 300}) end
-	}:register()
+	}
 end
 
 function love.mousepressed(x, y, button)
