@@ -3,8 +3,6 @@ require "lux.object"
 vector = lux.object.new {
 	0,		-- x-axis
 	0,		-- y-axis
-	nil,	-- w-axis (optional)
-	nil,	-- z-axis (optional)
 	__type = "vector"
 }
 
@@ -206,8 +204,12 @@ function vector:unpack()
 	return self[1], self[2], self[3], self[4]
 end
 
+function vector:lengthsqr()
+	return self[1]^2 + self[2]^2
+end
+
 function vector:length()
-	return math.sqrt(self[1]^2 + self[2]^2)
+	return math.sqrt(self:lengthsqr())
 end
 
 function vector:normalized()

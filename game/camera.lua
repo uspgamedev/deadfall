@@ -51,13 +51,12 @@ function mousepressed(x, y, button)
 		end
 	end
 end
+
 function mousereleased(x, y, button)
 	if button=='m' then middle_button=false end
 end
 
-function unset()
-	love.graphics.pop()
-end
+unset = love.graphics.pop
 
 function translate(x, y)
 	position:add(x, y)

@@ -22,7 +22,7 @@ function draw()
 	end
 
 	love.graphics.setColor(line_color)
-	for _,v in pairs(selected) do
+	for v in pairs(selected) do
 		love.graphics.rectangle('line', v.x - 4, v.y - 4, v.width + 8, v.height + 8)
 	end
 end
@@ -32,8 +32,8 @@ function mousepressed(x, y, button)
 	if button == 'l' then
 		click_pos = pos
 		if not love.keyboard.isDown('lshift') then clear() end
-	elseif button == 'r' and #selected>0 then
-		for _,v in pairs(selected) do
+	elseif button == 'r' then
+		for v in pairs(selected) do
 			v:move_to(pos)
 		end
 	end
@@ -47,8 +47,7 @@ function mousereleased(x, y, button)
 		if size.x < 5 and size.y < 5 then
 			for _,b in ipairs(bodies) do
 				if b:is_inside(click_pos) then
-					action = contains(b) and remove or register
-					action(b)
+					register(b)
 				end
 			end
 		else 
@@ -65,8 +64,7 @@ function mousereleased(x, y, button)
 
 				if centerX>=bottomX and centerX<=topX then
 					if centerY>=bottomY and centerY<=topY then
-						action = contains(b) and remove or register
-						action(b)
+						register(b)
 					end
 				end
 			end
@@ -81,25 +79,11 @@ function update(dt)
 end
 
 function register(body)
-	if not contains(body) then
-		table.insert(selected, body)
-	end
-end
-
-function contains(body)
-	for _,v in pairs(selected) do
-		if v==body then return true end
-	end
-	return false
+	selected[body] = true
 end
 
 function remove(body)
-	for i,v in pairs(selected) do
-		if v==body then
-			table.remove(selected, i)
-			return 
-		end
-	end
+	selected[body] = nil
 end
 
 function clear()

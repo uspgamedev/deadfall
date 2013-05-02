@@ -82,7 +82,7 @@ function timer:remove()
 end
 
 function timer.update(dt)
-	for timer,_ in pairs(timers) do
+	for timer in pairs(timers) do
 		timer:intern_update(dt)
 	end
 end

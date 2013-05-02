@@ -58,6 +58,7 @@ function love.update(dt)
 	for _,b in pairs(bodies) do
 		b:update(dt)
 	end
+	
 	base.timer.update(dt)
 
 	selector.update(dt)
