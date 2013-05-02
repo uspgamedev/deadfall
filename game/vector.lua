@@ -28,6 +28,7 @@ function vector:__newindex(i, v)
 	else rawset(self,i,v) end
 end
 
+--	returns first + second
 function vector.__add( first, second )
 	if type(first) == 'number' then
 		return vector:new {
@@ -47,6 +48,7 @@ function vector.__add( first, second )
 	end
 end
 
+--	returns first - second
 function vector.__sub( first, second)
 	if type(first) == 'number' then
 		return vector:new {
@@ -66,6 +68,7 @@ function vector.__sub( first, second)
 	end
 end
 
+--	returns first*second
 function vector.__mul( first, second )
 	if type(first) == 'number' then
 		return vector:new {
@@ -85,6 +88,7 @@ function vector.__mul( first, second )
 	end
 end
 
+--	returns first/second
 function vector.__div( first, second )
 	if type(first) == 'number' then
 		return vector:new {
@@ -102,6 +106,19 @@ function vector.__div( first, second )
 			first[2] / second[2]
 		}
 	end
+end
+
+--	returns -first
+function vector.__unm( first )
+	return vector:new {
+		-first[1],
+		-first[2]
+	}
+end
+
+--	checks if first == second
+function vector.__eq( first, second )
+	return (first[1] == second[1]) and (first[2] == second[2])
 end
 
 function vector:set(x, y)
