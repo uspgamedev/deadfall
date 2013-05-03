@@ -47,7 +47,7 @@ function mousepressed(x, y, button)
 	else
 		if button=='wd' or button=='wu' then
 			--TODO: make rotate work with other stuff
-			--rotate(button=='wu' and base_angle or -base_angle)
+			---rotate(button=='wu' and base_angle or -base_angle)
 		end
 	end
 end

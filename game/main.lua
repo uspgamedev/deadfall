@@ -53,8 +53,6 @@ function love.draw()
 end
 
 function love.update(dt)
-	if love.keyboard.isDown('lalt') and love.keyboard.isDown('f4') then os.exit(0) end
-
 	for _,b in pairs(bodies) do
 		b:update(dt)
 	end
@@ -62,4 +60,8 @@ function love.update(dt)
 	base.timer.update(dt)
 
 	selector.update(dt)
+end
+
+function love.keypressed()
+	if love.keyboard.isDown('lalt') and love.keyboard.isDown('f4') then love.event.push('quit') end	
 end

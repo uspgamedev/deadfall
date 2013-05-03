@@ -70,11 +70,6 @@ function mousereleased(x, y, button)
 			end
 		end
 		click_pos=nil
-	elseif button=='r' then
-		for v in pairs(selected) do
-			v.target[3] = x
-			v.target[4] = y
-		end
 	end
 end
 
