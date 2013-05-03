@@ -3,6 +3,8 @@ require "lux.object"
 vector = lux.object.new {
 	0,		-- x-axis
 	0,		-- y-axis
+	nil,
+	nil,
 	__type = "vector"
 }
 

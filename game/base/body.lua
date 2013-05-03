@@ -16,7 +16,7 @@ body.__init = {
 	speed	 = vector:new{}
 }
 
-function body.__init:__index( key )
+function body.__init:__index(key)
 	if key == 'x' then return self.position[1]
 	elseif key == 'y' then return self.position[2]
 	elseif key == 'centerX' then return (self.position[1] + self.size[1]/2)
@@ -28,7 +28,7 @@ function body.__init:__index( key )
 	else return getmetatable(self)[key] end
 end
 
-function body.__init:__newindex( key, v )
+function body.__init:__newindex(key, v)
 	if key == 'x' then self.position[1] = v
 	elseif key == 'y' then self.position[2] = v
 	elseif key == 'centerX' then self.position[1] = v - self.size[1]/2
@@ -68,7 +68,7 @@ function body.getAll()
 	return bodies
 end
 
-function body:update( dt )
+function body:update(dt)
 	if not self.target then return end
 
 	self.position:add(self.speed*dt)
@@ -83,7 +83,7 @@ function body:draw()
 	-- abstract
 end
 
-function body:is_inside( p )
+function body:is_inside(p)
 	if p.x < self.x then return false end
 	if p.y < self.y then return false end
 	if p.x > self.x + self.width  then return false end
