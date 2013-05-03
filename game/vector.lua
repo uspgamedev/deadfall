@@ -222,3 +222,7 @@ function vector:normalize()
 	local length = self:length()
 	return self:div(length,length)
 end
+
+function vector:reset()
+	return self:set(0, 0)
+end
