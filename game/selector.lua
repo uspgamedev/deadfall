@@ -33,8 +33,12 @@ function mousepressed(x, y, button)
 		click_pos = pos
 		if not love.keyboard.isDown('lshift') then clear() end
 	elseif button == 'r' then
+		local dx, dy, grt, last = 0, 0, 0, nil
+		for v in pairs(selected) do if v.width>grt then grt = v.width end end
+		dx = -(grt+10)*math.floor(length(selected)/2)
 		for v in pairs(selected) do
-			v:move_to(pos)
+			v:move_to(pos+{dx, dy})
+			dx = dx + grt + 20
 		end
 	end
 end
@@ -76,6 +80,12 @@ end
 function update(dt)
 	if not click_pos then return end
 	size:set(camera.getPosition():sub(click_pos))
+end
+
+function length(t)
+	local i=0
+	for _ in pairs(t) do i = i + 1 end
+	return i
 end
 
 function register(body)

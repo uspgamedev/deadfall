@@ -25,6 +25,16 @@ function love.load()
 		position = vector:new{400, 100}
 	}:register()
 
+	character:new {
+		radius = 50,
+		position = vector:new{200, 100}
+	}:register()
+
+	character:new {
+		radius = 50,
+		position = vector:new{300, 300}
+	}:register()
+
 	base.timer:new {
 		dt = 2.50,
 		repeats = false,

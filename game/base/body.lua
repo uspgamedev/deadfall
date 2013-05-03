@@ -73,8 +73,8 @@ function body:update(dt)
 
 	self.position:add(self.speed*dt)
 
-	if self.target:distsqr(self.centerX,self.centerY)<=9 then 
-		if self.target[3] then self.look_at(self.target[3], self.target[4]) end
+	if self.target:distsqr(self.centerX,self.centerY)<=16 then 
+		--if self.target[3] then self.look_at(self.target[3], self.target[4]) end
 		self.target = nil 
 	end 
 end

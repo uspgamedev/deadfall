@@ -14,8 +14,7 @@ end
 function character:draw()
 	love.graphics.setColor(0, 255, 0)
 
-	love.graphics.circle(self.mode, self.centerX, self.centerY, self.width/2)
-	
+	love.graphics.rectangle(self.mode, self.x, self.y, self.width, self.height)
 
 	if self.target then 
 		love.graphics.setColor(255,0,0)
