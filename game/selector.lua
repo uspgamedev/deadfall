@@ -28,7 +28,7 @@ function draw()
 end
 
 function mousepressed(x, y, button)
-	local pos = camera.getPosition()
+	local pos = camera.getMousePosition()
 	if button == 'l' then
 		click_pos = pos
 		if not love.keyboard.isDown('lshift') then clear() end
@@ -79,7 +79,7 @@ end
 
 function update(dt)
 	if not click_pos then return end
-	size:set(camera.getPosition():sub(click_pos))
+	size:set(camera.getMousePosition():sub(click_pos))
 end
 
 function length(t)

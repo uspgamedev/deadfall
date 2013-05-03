@@ -42,13 +42,18 @@ function love.load()
 	}
 end
 
+mouseFollowers = { selector, camera }
+
 function love.mousepressed(x, y, button)
-	selector.mousepressed(x, y, button)
-	camera.mousepressed(x, y, button)
+	for _,v in ipairs(mouseFollowers) do
+		v.mousepressed(x,y,button)
+	end
 end
+
 function love.mousereleased(x, y, button)
-	selector.mousereleased(x, y, button)
-	camera.mousereleased(x, y, button)
+	for _,v in ipairs(mouseFollowers) do
+		v.mousereleased(x,y,button)
+	end
 end
 
 function love.draw()
@@ -57,21 +62,36 @@ function love.draw()
 	for _,b in ipairs(bodies) do
 		b:draw()
 	end
+
 	selector.draw()
 
 	camera.unset()
 end
+
+updateFollowers = { base.timer, selector, camera }
 
 function love.update(dt)
 	for _,b in pairs(bodies) do
 		b:update(dt)
 	end
 	
-	base.timer.update(dt)
-
-	selector.update(dt)
+	for _,v in ipairs(updateFollowers) do
+		v.update(dt)
+	end
 end
 
-function love.keypressed()
-	if love.keyboard.isDown('lalt') and love.keyboard.isDown('f4') then love.event.push('quit') end	
+keyboardFollowers = { camera }
+
+function love.keypressed(key, code)
+	if love.keyboard.isDown('lalt') and love.keyboard.isDown('f4') then love.event.push('quit') end
+
+	for _,v in ipairs(keyboardFollowers) do
+		v.keypressed(key, code)
+	end
+end
+
+function love.keyreleased(key)
+	for _,v in ipairs(keyboardFollowers) do
+		v.keyreleased(key)
+	end
 end
