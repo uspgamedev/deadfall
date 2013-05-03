@@ -10,9 +10,8 @@ local angle	   = 0
 local base_vel 	 = 500
 local speed = vector:new{}
 local base_angle = math.pi/96
-local base_zoom	 = 2
+local base_zoom	 = .02
 
-local mouse_pos 	= vector:new{love.mouse.getPosition()}
 local middle_button	= false
 
 local SCREEN_WIDTH 	= love.graphics.getWidth()
@@ -26,8 +25,6 @@ function set()
 	--love.graphics.translate(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
 	--love.graphics.rotate(angle)
 	--love.graphics.translate(-SCREEN_WIDTH/2, -SCREEN_HEIGHT/2)
-
-	
 end
 
 unset = love.graphics.pop
@@ -56,11 +53,10 @@ function keypressed(key)
 		(key == 'up'   and -base_vel or 0) + (key == 'down'  and base_vel or 0)
 	)
 
-	if love.keyboard.isDown('lctrl') then
-		if love.keyboard.isDown('kp0') then 
-			scale:set(1, 1)
-			angle=0 
-		end
+	if love.keyboard.isDown('lctrl') and 
+			(love.keyboard.isDown('kp0') or love.keyboard.isDown('0')) then
+		scale:set(1, 1)
+		angle=0 
 	end
 end
 
@@ -90,8 +86,7 @@ function rotate(theta)
 end
 
 function zoom_in(rate)
-	rate = rate/100
-	if scale[1]+rate<=0 or scale[2]+rate<=0 then return end
+	if scale[1] + rate <= 0 or scale[2] + rate <= 0 then return end
 	scale:sub(rate, rate)
 end
 function zoom_out(rate)
@@ -101,9 +96,15 @@ end
 function getScale() return scale:clone() end
 
 function getTranslation() return position:clone() end
-function getPosition() 
-	return mouse_pos:set(love.mouse.getX()+position[1], 
-		love.mouse.getY()+position[2]):mult(scale):clone()
+
+-- fixes a point, altering the vector. Don't send vectors that you don't want to change!
+function fixPoint(p) 
+	return p:mult(scale):add(position)
 end
-function getX() return love.mouse.getX()+position[1] end
-function getY() return love.mouse.getY()+position[2] end
+
+function getMousePosition()
+	return fixPoint(vector:new{love.mouse.getPosition()})
+end
+
+function getMouseX() return love.mouse.getX() * scale[1] + position[1] end
+function getMouseY() return love.mouse.getY() * scale[2] + position[2] end
