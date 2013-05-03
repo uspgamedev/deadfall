@@ -33,8 +33,10 @@ function set()
 	translate(vx, vy)
 
 	if love.keyboard.isDown('lctrl') then
-		if love.keyboard.isDown('kp0') then scale:set(1, 1) end
-		if love.keyboard.isDown('kp5') then angle=0 end
+		if love.keyboard.isDown('kp0') then 
+			scale:set(1, 1)
+			angle=0 
+		end
 	end
 end
 
