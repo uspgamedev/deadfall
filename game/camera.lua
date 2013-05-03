@@ -7,7 +7,8 @@ local position = vector:new{}
 local scale	   = vector:new{1, 1}
 local angle	   = 0
 
-local base_vel 	 = 10
+local base_vel 	 = 500
+local speed = vector:new{}
 local base_angle = math.pi/96
 local base_zoom	 = 2
 
@@ -22,23 +23,14 @@ function set()
 	love.graphics.translate(-position[1], -position[2])
 	love.graphics.scale(1/scale[1], 1/scale[2])	
 
-	love.graphics.translate(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
-	love.graphics.rotate(angle)
-	love.graphics.translate(-SCREEN_WIDTH/2, -SCREEN_HEIGHT/2)
+	--love.graphics.translate(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
+	--love.graphics.rotate(angle)
+	--love.graphics.translate(-SCREEN_WIDTH/2, -SCREEN_HEIGHT/2)
+
 	
-	local vx, vy = 
-		love.keyboard.isDown('right') and base_vel or love.keyboard.isDown('left') and -base_vel or 0,
-		love.keyboard.isDown('down') and base_vel or love.keyboard.isDown('up') and -base_vel or 0
-
-	translate(vx, vy)
-
-	if love.keyboard.isDown('lctrl') then
-		if love.keyboard.isDown('kp0') then 
-			scale:set(1, 1)
-			angle=0 
-		end
-	end
 end
+
+unset = love.graphics.pop
 
 function mousepressed(x, y, button)
 	if button=='m' then middle_button=true end
@@ -58,7 +50,32 @@ function mousereleased(x, y, button)
 	if button=='m' then middle_button=false end
 end
 
-unset = love.graphics.pop
+function keypressed(key)
+	speed:add(
+		(key == 'left' and -base_vel or 0) + (key == 'right' and base_vel or 0),
+		(key == 'up'   and -base_vel or 0) + (key == 'down'  and base_vel or 0)
+	)
+
+	if love.keyboard.isDown('lctrl') then
+		if love.keyboard.isDown('kp0') then 
+			scale:set(1, 1)
+			angle=0 
+		end
+	end
+end
+
+function keyreleased(key)
+	speed:sub(
+		(key == 'left' and -base_vel or 0) + (key == 'right' and base_vel or 0),
+		(key == 'up'   and -base_vel or 0) + (key == 'down'  and base_vel or 0)
+	)
+end
+
+function update(dt)
+	if not speed:equals(0,0) then
+		translate(speed*dt)
+	end
+end
 
 function translate(x, y)
 	position:add(x, y)
