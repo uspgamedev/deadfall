@@ -3,6 +3,7 @@ module('camera', package.seeall)
 require 'vector'
 require 'lux.object'
 
+local mousePos = vector:new{love.mouse.getPosition()}
 local position = vector:new{}
 local scale	   = vector:new{1, 1}
 local angle	   = 0
@@ -103,7 +104,7 @@ function fixPoint(p)
 end
 
 function getMousePosition()
-	return fixPoint(vector:new{love.mouse.getPosition()})
+	return fixPoint(mousePos:set(love.mouse.getPosition()))
 end
 
 function getMouseX() return love.mouse.getX() * scale[1] + position[1] end

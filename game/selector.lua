@@ -33,9 +33,9 @@ function mousepressed(x, y, button)
 		click_pos = pos
 		if not love.keyboard.isDown('lshift') then clear() end
 	elseif button == 'r' then
-		local dx, dy, grt, last = 0, 0, 0, nil
-		for v in pairs(selected) do if v.width>grt then grt = v.width end end
-		dx = -(grt+10)*math.floor(length(selected)/2)
+		local dx, dy, grt, len = 0, 0, 0, 0
+		for v in pairs(selected) do if v.width>grt then grt = v.width end len = len + 1 end
+		dx = -(grt+20)*math.floor(len/2)
 		for v in pairs(selected) do
 			v:move_to(pos+{dx, dy})
 			dx = dx + grt + 20
