@@ -3,6 +3,7 @@ module("base", package.seeall)
 require 'vector'
 require 'lux.functional'
 require 'lux.object'
+require 'base.timer'
 
 local bodies = {}
 
@@ -16,7 +17,12 @@ body.__init = {
 	size 	 = vector:new{},
 	speed	 = vector:new{},
 	force	 = vector:new{},
-	mass	 = 10
+	mass	 = 10,
+	reactor	 = base.timer:new {
+		dt 		= 0.250,
+		repeats = true,
+		running = false
+	}
 }
 
 function body.__init:__index(key)
@@ -83,9 +89,17 @@ function body:update(dt)
 	self.force:reset()
 
 	for _,v in pairs(bodies) do
-		if self:intersects(v) then
-			self.speed:add((self.centerX-v.centerX), (self.centerY-v.centerY))
-			--self:move_to(self.target)
+		if v~=self then
+			if self:intersects(v) then
+				self.speed:add((self.centerX-v.centerX), (self.centerY-v.centerY))
+				if not self.reactor.running then
+					self.reactor.event = function()
+						self:move_to(self.target)
+						self.reactor.running = false
+					end
+					self.reactor:start()
+				end
+			end
 		end
 	end
 
@@ -116,9 +130,10 @@ function body:is_inside(p, q)
 end
 
 function body:intersects(b)
-	local width, height = self.size:unpack()
+	local w, h = self.size:unpack()
 	local x, y = self.position:unpack()
-	local isInside = lux.functional.bindfirst(b.is_inside, b)
-	return isInside(x, y) or isInside(x, y+height) or
-		isInside(x+width, y) or isInside(x+width, y+height)
+	local px, py = b.position:unpack()
+	local pw, ph = b.size:unpack()
+	return x<=px+pw and x+w>=px and 
+		y<=py+ph and y+h>=py
 end
