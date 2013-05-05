@@ -47,7 +47,6 @@ function mousereleased(x, y, button)
 	if not click_pos then return end
 	if button=='l' then
 		local bodies = base.body.getAll()
-
 		if size.x < 5 and size.y < 5 then
 			for _,b in ipairs(bodies) do
 				if b:is_inside(click_pos) then

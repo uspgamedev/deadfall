@@ -1,6 +1,7 @@
 module("base", package.seeall)
 
 require 'vector'
+require 'lux.functional'
 require 'lux.object'
 
 local bodies = {}
@@ -78,14 +79,13 @@ function body:update(dt)
 	if not self.target then return end
 
 	self.position:add(self.speed*dt)
-	self.speed:add(force/mass)
-	
-	local dx, dy, theta
-	for _,v in bodies do
+	self.speed:add(self.force/self.mass)
+	self.force:reset()
+
+	for _,v in pairs(bodies) do
 		if self:intersects(v) then
-			dx = self.centerX - v.centerX
-			dy = self.centerY - v.centerY
-			theta = math.atan2(dy, dx)
+			self.speed:add((self.centerX-v.centerX), (self.centerY-v.centerY))
+			--self:move_to(self.target)
 		end
 	end
 
@@ -116,13 +116,9 @@ function body:is_inside(p, q)
 end
 
 function body:intersects(b)
-	local width, height = b.size:unpack()
-	local x, y = b.position:unpack()
-	if self:is_inside(x, y) or
-		self:is_inside(x+width, y) or
-		self:is_inside(x, y+height) or
-		self:is_inside(x+width, y+height)
-		return true
-	end
-	return false
+	local width, height = self.size:unpack()
+	local x, y = self.position:unpack()
+	local isInside = lux.functional.bindfirst(b.is_inside, b)
+	return isInside(x, y) or isInside(x, y+height) or
+		isInside(x+width, y) or isInside(x+width, y+height)
 end

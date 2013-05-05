@@ -100,11 +100,11 @@ function getTranslation() return position:clone() end
 
 -- fixes a point, altering the vector. Don't send vectors that you don't want to change!
 function fixPoint(p) 
-	return p:mult(scale):add(position)
+	return p:add(position):mult(scale)
 end
 
 function getMousePosition()
-	return fixPoint(mousePos:set(love.mouse.getPosition()))
+	return fixPoint(vector:new{love.mouse.getPosition()})
 end
 
 function getMouseX() return love.mouse.getX() * scale[1] + position[1] end
