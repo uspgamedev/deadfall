@@ -54,9 +54,8 @@ function body.__init:__newindex(key, v)
 end
 
 function body:look_at(x, y)
-	if not y then 
-		self:look_at(x:unpack()) 
-		return 
+	if not y then
+		return self:look_at(x:unpack())
 	end
 	
 	local dx = x - self.centerX
@@ -92,9 +91,11 @@ function body:update(dt)
 		if v~=self then
 			if self:intersects(v) then
 				self.speed:add((self.centerX-v.centerX), (self.centerY-v.centerY))
-				if not self.reactor.running then
+				if not self.reactor.running and self.target then
 					self.reactor.event = function()
-						self:move_to(self.target)
+						if self.target then
+							self:move_to(self.target)
+						end
 						self.reactor.running = false
 					end
 					self.reactor:start()
