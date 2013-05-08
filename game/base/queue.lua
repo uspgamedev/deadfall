@@ -11,7 +11,7 @@ function queue:__init()
 	self.push = lux.functional.bindfirst(table.insert, self)
 
 	-- Removes and returns the first position in the queue.
-	self.pop  = lux.functional.bindfirst(table.remove, self, 1)
+	self.pop  = lux.functional.bindleft(table.remove, self, 1)
 
 	-- Returns the queue's size.
 	self.size = lux.functional.bindfirst(function(_table) return #_table end, self)
