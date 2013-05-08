@@ -20,4 +20,10 @@ function character:draw()
 		love.graphics.setColor(255,0,0)
 		love.graphics.circle('fill', self.target.x, self.target.y, 5)
 	end
+
+	for i,v in ipairs(self.targets) do
+		love.graphics.setColor(0, 0, 255)
+		love.graphics.print(i, v[1], v[2])
+		love.graphics.circle('fill', v[1], v[2], 3)
+	end
 end

@@ -3,21 +3,23 @@ module("base", package.seeall)
 require 'vector'
 require 'lux.functional'
 require 'lux.object'
+require 'base.queue'
 require 'base.timer'
 
 local bodies = {}
 
 body = lux.object.new {
-	target	 = nil,
-	angle	 = 0
+	angle	 = 0,
+	mass	 = 10
 }
 
 body.__init = {
+	targets  = base.queue:new{},
+	target	 = nil,
 	position = vector:new{},
 	size 	 = vector:new{},
 	speed	 = vector:new{},
 	force	 = vector:new{},
-	mass	 = 10,
 	reactor	 = base.timer:new {
 		dt 		= 0.250,
 		repeats = true,
@@ -64,11 +66,27 @@ function body:look_at(x, y)
 	return self.angle
 end
 
+function body:add_move(target)
+
+end
+
 function body:move_to(target)
-	self:look_at(target)
-	--self.speed = vector:new{math.cos(self.angle)*200, math.sin(self.angle)*200}
-	self.speed = (target - {self.centerX,self.centerY}):normalized() * 200
-	self.target = target
+	if not love.keyboard.isDown('lshift') then
+		self:look_at(target)
+		self.speed = (target - {self.centerX,self.centerY}):normalized() * 200
+		self.target = target
+		--self.targets.clear()
+	else
+		if not base.selector.contains(self) then return end
+		if not self.target then
+			self:look_at(target)
+			self.speed = (target - {self.centerX,self.centerY}):normalized() * 200
+			self.target = target
+			--self.targets.clear()
+		else
+			self.targets.push(target)
+		end
+	end
 end
 
 function body:register()
@@ -92,13 +110,15 @@ function body:update(dt)
 			if self:intersects(v) then
 				self.speed:add((self.centerX-v.centerX), (self.centerY-v.centerY))
 				if not self.reactor.running and self.target then
-					self.reactor.event = function()
+					if not self.reactor.event then
+						self.reactor.event = function()
 						if self.target then
 							self:move_to(self.target)
 						end
-						self.reactor.running = false
 					end
-					self.reactor:start()
+					self.reactor.running = false
+				end
+				self.reactor:start()
 				end
 			end
 		end
@@ -106,7 +126,8 @@ function body:update(dt)
 
 	if self.target:distsqr(self.centerX,self.centerY)<=16 then 
 		--if self.target[3] then self.look_at(self.target[3], self.target[4]) end
-		self.target = nil 
+		self.target = self.targets.pop()
+		if self.target then print 'hello!' self:move_to(self.target) end
 	end 
 end
 

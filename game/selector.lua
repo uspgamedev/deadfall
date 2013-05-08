@@ -87,6 +87,13 @@ function length(t)
 	return i
 end
 
+function contains(body)
+	for k in pairs(selected) do
+		if k==body then return true end
+	end
+	return false
+end
+
 function register(body)
 	selected[body] = true
 end
