@@ -66,10 +66,6 @@ function body:look_at(x, y)
 	return self.angle
 end
 
-function body:add_move(target)
-
-end
-
 function body:move_to(target, multipath)
 	if not multipath then
 		self:look_at(target)

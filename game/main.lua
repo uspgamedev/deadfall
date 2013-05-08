@@ -17,22 +17,26 @@ function love.load()
 	
 	character:new {
 		radius = 25,
-		position = vector:new{600, 500}
+		position = vector:new{600, 500},
+		team = 1
 	}:register()
 
 	character:new {
 		radius = 50,
-		position = vector:new{400, 100}
+		position = vector:new{400, 100},
+		team = 1
 	}:register()
 
 	character:new {
 		radius = 50,
-		position = vector:new{200, 100}
+		position = vector:new{200, 100},
+		team = 2
 	}:register()
 
 	character:new {
 		radius = 50,
-		position = vector:new{300, 300}
+		position = vector:new{300, 300},
+		team = 2
 	}:register()
 
 	base.timer:new {
