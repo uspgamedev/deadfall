@@ -46,32 +46,7 @@ end
 function mousereleased(x, y, button)
 	if not click_pos then return end
 	if button=='l' then
-		local bodies = base.body.getAll()
-		if size.x < 5 and size.y < 5 then
-			for _,b in ipairs(bodies) do
-				if b:is_inside(click_pos) then
-					register(b)
-				end
-			end
-		else 
-			local topX, topY, bottomX, bottomY = 
-				size.x > 0 and click_pos.x + size.x or click_pos.x,
-				size.y > 0 and click_pos.y + size.y or click_pos.y,
-				size.x < 0 and click_pos.x + size.x or click_pos.x,
-				size.y < 0 and click_pos.y + size.y or click_pos.y
-
-			local centerX, centerY
-			for _,b in ipairs(bodies) do
-				centerX = b.centerX
-				centerY = b.centerY
-
-				if centerX>=bottomX and centerX<=topX then
-					if centerY>=bottomY and centerY<=topY then
-						register(b)
-					end
-				end
-			end
-		end
+		print(click_pos, size)
 		click_pos=nil
 	end
 end
@@ -79,6 +54,36 @@ end
 function update(dt)
 	if not click_pos then return end
 	size:set(camera.getMousePosition():sub(click_pos))
+
+	local bodies = base.body.getAll()
+	if size.x < 5 and size.y < 5 then
+		for _,b in ipairs(bodies) do
+			if b:is_inside(click_pos) then
+				register(b)
+			end
+		end
+	else 
+		local sx, sy = size:unpack()
+		local px, py = click_pos:unpack()
+
+		local topX, topY, bottomX, bottomY = 
+			sx > 0 and px + sx or px,
+			sy > 0 and py + sy or py,
+			sx < 0 and px + sx or px,
+			sy < 0 and py + sy or py
+
+		local centerX, centerY
+		for _,b in ipairs(bodies) do
+			centerX = b.centerX
+			centerY = b.centerY
+
+			if centerX>=bottomX and centerX<=topX then
+				if centerY>=bottomY and centerY<=topY then
+					register(b)
+				else remove(b) end
+			else remove(b) end
+		end
+	end
 end
 
 function length(t)
