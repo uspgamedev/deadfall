@@ -71,14 +71,14 @@ function body:move_to(target, multipath)
 		self:look_at(target)
 		self.speed = (target - {self.centerX,self.centerY}):normalized() * 200
 		self.target = target
-		if multipath==false then self.targets.clear() end
+		if multipath==false then self.targets:clear() end
 	else
 		if not self.target then
 			self:look_at(target)
 			self.speed = (target - {self.centerX,self.centerY}):normalized() * 200
 			self.target = target
 		else
-			self.targets.push(target)
+			self.targets:push(target)
 		end
 	end
 end
@@ -120,7 +120,7 @@ function body:update(dt)
 
 	if self.target:distsqr(self.centerX,self.centerY)<=16 then 
 		--if self.target[3] then self.look_at(self.target[3], self.target[4]) end
-		self.target = self.targets.pop()
+		self.target = self.targets:pop()
 		if self.target then self:move_to(self.target) end
 	end 
 end
