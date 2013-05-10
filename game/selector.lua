@@ -29,15 +29,16 @@ end
 
 function mousepressed(x, y, button)
 	local pos = camera.getMousePosition()
+	local lshift = love.keyboard.isDown('lshift')
 	if button == 'l' then
 		click_pos = pos
-		if not love.keyboard.isDown('lshift') then clear() end
+		if not lshift then clear() end
 	elseif button == 'r' then
 		local dx, dy, grt, len = 0, 0, 0, 0
 		for v in pairs(selected) do if v.width>grt then grt = v.width end len = len + 1 end
 		dx = -(grt+20)*math.floor(len/2)
 		for v in pairs(selected) do
-			v:move_to(pos+{dx, dy}, love.keyboard.isDown('lshift'))
+			v:move_to(pos+{dx, dy}, lshift)
 			dx = dx + grt + 20
 		end
 	end
@@ -63,6 +64,7 @@ function update(dt)
 			end
 		end
 	else 
+		local lshift = love.keyboard.isDown('lshift')
 		local sx, sy = size:unpack()
 		local px, py = click_pos:unpack()
 
@@ -73,15 +75,15 @@ function update(dt)
 			sy < 0 and py + sy or py
 
 		local centerX, centerY
-		for _,b in ipairs(bodies) do
+		for i,b in ipairs(bodies) do
 			centerX = b.centerX
 			centerY = b.centerY
 
 			if centerX>=bottomX and centerX<=topX then
 				if centerY>=bottomY and centerY<=topY then
 					register(b)
-				else remove(b) end
-			else remove(b) end
+				elseif not lshift then  remove(b) end
+			elseif not lshift then remove(b) end
 		end
 	end
 end
