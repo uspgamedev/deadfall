@@ -1,25 +1,28 @@
 module('base', package.seeall)
 
-require 'lux.functional'
 require 'lux.object'
 
 -- Queue: FIFO - First-In-First-Out
 queue = lux.object.new {}
 
-function queue:__init()
-	-- Adds the element given to the last position in the queue.
-	self.push = lux.functional.bindfirst(table.insert, self)
+-- Adds the element given to the last position in the queue.
+function queue:push(e)
+	self[#self + 1] = e
+end
 
-	-- Removes and returns the first position in the queue.
-	self.pop  = lux.functional.bindleft(table.remove, self, 1)
+-- Removes and returns the first position in the queue.
+function queue:pop()
+	table.remove(self, 1)
+end
 
-	-- Returns the queue's size.
-	self.size = lux.functional.bindfirst(function(_table) return #_table end, self)
+-- Returns whether the queue is empty or not.
+function queue:empty()
+	return #self == 0
+end
 
-	-- Returns whether the queue is empty or not.
-	self.empty = lux.functional.bindfirst(function(_table) return _table.size()==0 end, self)
-
-	-- Clears the whole queue.
-	self.clear = lux.functional.bindfirst(function(_table) 
-			for i,v in ipairs(_table) do _table[i] = nil end end, self)
+-- Clears the whole queue.
+function queue:clear()
+	for k in ipairs(self) do
+		self[k] = nil
+	end
 end
