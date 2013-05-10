@@ -81,8 +81,8 @@ function update(dt)
 			if centerX>=bottomX and centerX<=topX then
 				if centerY>=bottomY and centerY<=topY then
 					restrict(b, 0)
-				elseif not lshift then remove(b) end
-			elseif not lshift then remove(b) end
+				elseif not lshift then b.passed = nil remove(b) end
+			elseif not lshift then b.passed = nil remove(b) end
 		end
 	end
 end
