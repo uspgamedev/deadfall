@@ -12,7 +12,7 @@ end
 
 -- Removes and returns the first position in the queue.
 function queue:pop()
-	table.remove(self, 1)
+	return table.remove(self, 1)
 end
 
 -- Returns whether the queue is empty or not.
