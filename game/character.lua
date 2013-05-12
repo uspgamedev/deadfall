@@ -83,7 +83,7 @@ function character:update( dt )
 	if not self.target then return end
 	character:__super().update(self, dt)
 
-	for _,v in pairs(base.body.getAll()) do
+	for _,v in pairs(base.body.getAll().character) do
 		if v~=self then
 			if self:intersects(v) then
 				self.speed:add((self.centerX-v.centerX), (self.centerY-v.centerY))

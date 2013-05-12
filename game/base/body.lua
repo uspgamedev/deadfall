@@ -61,7 +61,8 @@ function body:look_at(x, y)
 end
 
 function body:register()
-	table.insert(bodies, self)
+	if not bodies[self.__type] then bodies[self.__type] = {} end
+	table.insert(bodies[self.__type], self)
 	return self
 end
 
@@ -102,4 +103,20 @@ function body:intersects(b)
 	local pw, ph = b.size:unpack()
 	return x<=px+pw and x+w>=px and 
 		y<=py+ph and y+h>=py
+end
+
+function body.iterate()
+	local i = 0
+	local id = next(bodies)
+	local current = bodies[id]
+	return function ()
+		i = i + 1
+		if i > #current then
+			i = 1
+			id = next(bodies, id)
+			if id == nil then return end
+			current = bodies[id]
+		end
+		return current[i]
+	end
 end

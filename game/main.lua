@@ -6,7 +6,7 @@ require 'base.timer'
 require 'selector'
 require 'camera'
 
-local bodies
+bodies = 0
 
 function love.load()
 	bodies = base.body.getAll()
@@ -64,7 +64,7 @@ end
 function love.draw()
 	camera.set()
 
-	for _,b in ipairs(bodies) do
+	for b in base.body.iterate() do
 		b:draw()
 	end
 
@@ -76,7 +76,7 @@ end
 updateFollowers = { base.timer, selector, camera }
 
 function love.update(dt)
-	for _,b in pairs(bodies) do
+	for b in base.body.iterate() do
 		b:update(dt)
 	end
 	

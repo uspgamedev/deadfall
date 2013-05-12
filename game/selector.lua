@@ -60,10 +60,9 @@ end
 function update(dt)
 	if not click_pos then return end
 	size:set(camera.getMousePosition():sub(click_pos))
-	local bodies = base.body.getAll()
 	local lshift = love.keyboard.isDown('lshift')
 	if size.x < 5 and size.y < 5 then
-		for _,b in ipairs(bodies) do
+		for _,b in ipairs(bodies.character) do
 			if b:is_inside(click_pos) then
 				if b.team==0 and lshift then return end
 				restrict(b, 0)
@@ -80,7 +79,7 @@ function update(dt)
 			sy < 0 and py + sy or py
 
 		local centerX, centerY
-		for i,b in ipairs(bodies) do
+		for i,b in ipairs(bodies.character) do
 			centerX = b.centerX
 			centerY = b.centerY
 
@@ -121,9 +120,8 @@ function remove(body)
 end
 
 function clear()
-	local bodies = base.body.getAll()
 	for k in pairs(selected) do
 		selected[k] = nil
 	end
-	for _,k in ipairs(bodies) do k.passed = nil end
+	for _,k in ipairs(bodies.character) do k.passed = nil end
 end
