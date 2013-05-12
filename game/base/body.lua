@@ -16,7 +16,7 @@ body = lux.object.new {
 
 body.__init = {
 	position = vector:new{},
-	size 	 = vector:new{},
+	size 	 = vector:new{0,0},
 	speed	 = vector:new{},
 	force	 = vector:new{}
 }
@@ -66,6 +66,15 @@ function body:register()
 	return self
 end
 
+function body:unregister()
+	for i = 1, #bodies[self.__type] do
+		if bodies[self.__type][i] == self then
+			table.remove(bodies[self.__type], i)
+			return
+		end
+	end
+end
+
 function body.getAll()
 	return bodies
 end
@@ -97,12 +106,12 @@ function body:is_inside(p, q)
 end
 
 function body:intersects(b)
-	local w, h = self.size:unpack()
-	local x, y = self.position:unpack()
-	local px, py = b.position:unpack()
-	local pw, ph = b.size:unpack()
-	return x<=px+pw and x+w>=px and 
-		y<=py+ph and y+h>=py
+	local w, h = unpack(self.size)
+	local x, y = unpack(self.position)
+	local px, py = unpack(b.position)
+	local pw, ph = unpack(b.size)
+	return x <= px + pw and x + w >= px and 
+		y <= py + ph and y + h >= py
 end
 
 function body.iterate()
