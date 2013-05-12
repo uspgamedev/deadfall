@@ -34,12 +34,18 @@ function mousepressed(x, y, button)
 		click_pos = pos
 		if not lshift then clear() end
 	elseif button == 'r' then
-		local dx, dy, grt, len = 0, 0, 0, 0
-		for v in pairs(selected) do if v.width>grt then grt = v.width end len = len + 1 end
-		dx = -(grt+20)*math.floor(len/2)
-		for v in pairs(selected) do
-			v:move_to(pos+{dx, dy}, lshift)
-			dx = dx + grt + 20
+		if love.keyboard.isDown('lctrl') then
+			for b in pairs(selected) do
+				b:shoot(pos)
+			end
+		else
+			local dx, dy, grt, len = 0, 0, 0, 0
+			for v in pairs(selected) do grt = math.max(grt,v.width) len = len + 1 end
+			dx = -(grt+20)*math.floor(len/2)
+			for v in pairs(selected) do
+				v:move_to(pos+{dx, dy}, lshift)
+				dx = dx + grt + 20
+			end
 		end
 	end
 end

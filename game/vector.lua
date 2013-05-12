@@ -158,7 +158,7 @@ end
 function vector:mult( x, y )
 	if x==nil or type(x)=='number' then
 		self[1] = self[1] * (x or 1)
-		self[2] = self[2] * (y or 1)
+		self[2] = self[2] * (y or x or 1)
 	else
 		self[1] = self[1] * x[1]
 		self[2] = self[2] * x[2]
@@ -170,7 +170,7 @@ end
 function vector:div( x, y )
 	if x==nil or type(x)=='number' then
 		self[1] = self[1] / (x or 1)
-		self[2] = self[2] / (y or 1)
+		self[2] = self[2] / (y or x or 1)
 	else
 		self[1] = self[1] / x[1]
 		self[2] = self[2] / x[2]

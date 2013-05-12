@@ -10,21 +10,15 @@ local bodies = {}
 
 body = lux.object.new {
 	angle	 = 0,
-	mass	 = 10
+	mass	 = 10,
+	__type	 = "body"
 }
 
 body.__init = {
-	targets  = base.queue:new{},
-	target	 = nil,
 	position = vector:new{},
 	size 	 = vector:new{},
 	speed	 = vector:new{},
-	force	 = vector:new{},
-	reactor	 = base.timer:new {
-		dt 		= 0.250,
-		repeats = true,
-		running = false
-	}
+	force	 = vector:new{}
 }
 
 function body.__init:__index(key)
@@ -57,30 +51,13 @@ end
 
 function body:look_at(x, y)
 	if not y then
-		return self:look_at(x:unpack())
+		x, y = unpack(x)
 	end
 	
 	local dx = x - self.centerX
 	local dy = y - self.centerY
 	self.angle = math.atan2(dy, dx)
 	return self.angle
-end
-
-function body:move_to(target, multipath)
-	if not multipath then
-		self:look_at(target)
-		self.speed = (target - {self.centerX,self.centerY}):normalized() * 200
-		self.target = target
-		if multipath==false then self.targets:clear() end
-	else
-		if not self.target then
-			self:look_at(target)
-			self.speed = (target - {self.centerX,self.centerY}):normalized() * 200
-			self.target = target
-		else
-			self.targets:push(target)
-		end
-	end
 end
 
 function body:register()
@@ -93,36 +70,9 @@ function body.getAll()
 end
 
 function body:update(dt)
-	if not self.target then return end
-
 	self.position:add(self.speed*dt)
 	self.speed:add(self.force/self.mass)
 	self.force:reset()
-
-	for _,v in pairs(bodies) do
-		if v~=self then
-			if self:intersects(v) then
-				self.speed:add((self.centerX-v.centerX), (self.centerY-v.centerY))
-				if not self.reactor.running and self.target then
-					if not self.reactor.event then
-						self.reactor.event = function()
-						if self.target then
-							self:move_to(self.target)
-						end
-					end
-					self.reactor.running = false
-				end
-				self.reactor:start()
-				end
-			end
-		end
-	end
-
-	if self.target:distsqr(self.centerX,self.centerY)<=16 then 
-		--if self.target[3] then self.look_at(self.target[3], self.target[4]) end
-		self.target = self.targets:pop()
-		if self.target then self:move_to(self.target) end
-	end 
 end
 
 function body:draw()

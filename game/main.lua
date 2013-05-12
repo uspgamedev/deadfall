@@ -1,5 +1,6 @@
 require 'vector'
 require 'character'
+require 'bullet'
 require 'base.body'
 require 'base.timer'
 require 'selector'
