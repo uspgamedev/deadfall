@@ -4,7 +4,7 @@ require 'vector'
 require 'lux.object'
 
 local mousePos = vector:new{love.mouse.getPosition()}
-local position = vector:new{}
+local position = vector:new{0, 0}
 local scale	   = vector:new{1, 1}
 local angle	   = 0
 
@@ -17,6 +17,8 @@ local middle_button	= false
 
 local SCREEN_WIDTH 	= love.graphics.getWidth()
 local SCREEN_HEIGHT = love.graphics.getHeight()
+
+local size 	= vector:new{SCREEN_WIDTH, SCREEN_HEIGHT}
 
 function set()
 	love.graphics.push()
@@ -89,6 +91,7 @@ end
 function zoom_in(rate)
 	if scale[1] + rate <= 0 or scale[2] + rate <= 0 then return end
 	scale:sub(rate, rate)
+	size:set(SCREEN_WIDTH, SCREEN_HEIGHT):mult(scale)
 end
 function zoom_out(rate)
 	zoom_in(-rate)
@@ -109,3 +112,8 @@ end
 
 function getMouseX() return love.mouse.getX() * scale[1] + position[1] end
 function getMouseY() return love.mouse.getY() * scale[2] + position[2] end
+
+-- Not to modify! This depends on reference-by-value to work!
+function getPosition() return position end
+-- Works the same way as getPosition(). Do not modify the value!
+function getSize() return size end

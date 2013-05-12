@@ -1,12 +1,13 @@
 require 'base.body'
+require 'camera'
 
 bullet = base.body:new {
 	__type = "bullet"
 }
 
 local screenbounds = {
-	position = {0,0},
-	size  = {love.graphics.getWidth(),love.graphics.getHeight()}
+	position = camera.getPosition(),
+	size  = camera.getSize()
 }
 
 function bullet:__init()
