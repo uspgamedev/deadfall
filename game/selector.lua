@@ -4,6 +4,7 @@ require 'vector'
 require 'base.body'
 require 'lux.object'
 require 'camera'
+require 'base.transform'
 
 local selected = {}
 
@@ -22,8 +23,11 @@ function draw()
 	end
 
 	love.graphics.setColor(line_color)
+	local vPos, vSize
 	for v in pairs(selected) do
-		love.graphics.rectangle('line', v.x - 4, v.y - 4, v.width + 8, v.height + 8)
+		vPos, vSize = v.position, v.size
+		base.transform.rotate(v, love.graphics.rectangle,
+			'line', vPos[1] - 4, vPos[2] - 4, vSize[1] + 8, vSize[2] + 8)
 	end
 end
 

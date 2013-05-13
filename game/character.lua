@@ -1,4 +1,5 @@
 require 'base.body'
+require 'base.transform'
 
 local colors = {
 	{0, 255, 0},
@@ -53,8 +54,10 @@ end
 function character:draw()
 	local teamColor = colors[self.team+1]
 	love.graphics.setColor(teamColor)
-
-	love.graphics.rectangle(self.mode, self.x, self.y, self.width, self.height)
+	
+	base.transform.rotate(self, love.graphics.rectangle,
+		self.mode, self.x, self.y, self.width, self.height)
+	--love.graphics.rectangle(self.mode, self.x, self.y, self.width, self.height)
 
 	if self.target then 
 		love.graphics.setColor(255,0,0)
@@ -77,6 +80,8 @@ function character:draw()
 		love.graphics.line(latX, latY, v[1], v[2])
 		latX, latY = v[1], v[2]
 	end
+
+
 end
 
 function character:update( dt )

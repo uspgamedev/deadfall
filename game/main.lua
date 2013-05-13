@@ -47,20 +47,6 @@ function love.load()
 	}
 end
 
-mouseFollowers = { selector, camera }
-
-function love.mousepressed(x, y, button)
-	for _,v in ipairs(mouseFollowers) do
-		v.mousepressed(x,y,button)
-	end
-end
-
-function love.mousereleased(x, y, button)
-	for _,v in ipairs(mouseFollowers) do
-		v.mousereleased(x,y,button)
-	end
-end
-
 function love.draw()
 	camera.set()
 
@@ -98,5 +84,19 @@ end
 function love.keyreleased(key)
 	for _,v in ipairs(keyboardFollowers) do
 		v.keyreleased(key)
+	end
+end
+
+mouseFollowers = { selector, camera }
+
+function love.mousepressed(x, y, button)
+	for _,v in ipairs(mouseFollowers) do
+		v.mousepressed(x,y,button)
+	end
+end
+
+function love.mousereleased(x, y, button)
+	for _,v in ipairs(mouseFollowers) do
+		v.mousereleased(x,y,button)
 	end
 end

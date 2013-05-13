@@ -85,8 +85,18 @@ function body:update(dt)
 	self.force:reset()
 end
 
+function body:push()
+	love.graphics.push()
+
+	local position, size = self.position, self.size
+	love.graphics.translate(position[1]+size[1]/2, position[2]+size[2]/2)
+	love.graphics.rotate(self.angle)
+	love.graphics.translate(-position[1]-size[1]/2, -position[2]-size[2]/2)
+end
+body.pop = love.graphics.pop
+
 function body:draw()
-	-- abstract
+	--abstract
 end
 
 function body:is_inside(p, q)
