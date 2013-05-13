@@ -51,7 +51,10 @@ function love.draw()
 	camera.set()
 
 	for b in base.body.iterate() do
+		love.graphics.push()
 		b:draw()
+		love.graphics.pop()
+		if b.drawextra then b:drawextra() end
 	end
 
 	selector.draw()

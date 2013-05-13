@@ -26,8 +26,10 @@ function draw()
 	local vPos, vSize
 	for v in pairs(selected) do
 		vPos, vSize = v.position, v.size
-		base.transform.rotate(v, love.graphics.rectangle,
-			'line', vPos[1] - 4, vPos[2] - 4, vSize[1] + 8, vSize[2] + 8)
+		love.graphics.push();
+		base.transform.rotate(v)
+		love.graphics.rectangle('line', vPos[1] - 4, vPos[2] - 4, vSize[1] + 8, vSize[2] + 8)
+		love.graphics.pop();
 	end
 end
 

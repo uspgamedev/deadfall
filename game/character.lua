@@ -52,13 +52,13 @@ function character:move_to(target, multipath)
 end
 
 function character:draw()
-	local teamColor = colors[self.team+1]
-	love.graphics.setColor(teamColor)
+	love.graphics.setColor(colors[self.team+1])
 	
-	base.transform.rotate(self, love.graphics.rectangle,
-		self.mode, self.x, self.y, self.width, self.height)
-	--love.graphics.rectangle(self.mode, self.x, self.y, self.width, self.height)
+	base.transform.rotate(self)
+	love.graphics.rectangle(self.mode, self.x, self.y, self.width, self.height)
+end
 
+function character:drawextra()
 	if self.target then 
 		love.graphics.setColor(255,0,0)
 		love.graphics.circle('fill', self.target.x, self.target.y, 5)
@@ -67,7 +67,7 @@ function character:draw()
 	local latX, latY = self.centerX, self.centerY
 	local ltarg = self.target
 	if ltarg then
-		love.graphics.setColor(teamColor)
+		love.graphics.setColor(colors[self.team+1])
 		love.graphics.line(latX, latY, ltarg[1], ltarg[2])
 		latX, latY = ltarg[1], ltarg[2]
 	end
@@ -80,8 +80,6 @@ function character:draw()
 		love.graphics.line(latX, latY, v[1], v[2])
 		latX, latY = v[1], v[2]
 	end
-
-
 end
 
 function character:update( dt )
