@@ -76,7 +76,7 @@ function character:drawextra()
 		love.graphics.setColor(0, 0, 255)
 		love.graphics.print(i, v[1], v[2])
 		love.graphics.circle('fill', v[1], v[2], 3)
-		love.graphics.setColor(teamColor)
+		love.graphics.setColor(colors[self.team+1])
 		love.graphics.line(latX, latY, v[1], v[2])
 		latX, latY = v[1], v[2]
 	end
