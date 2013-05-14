@@ -2,6 +2,7 @@ module("selector", package.seeall)
 
 require 'vector'
 require 'base.body'
+require 'base.timer'
 require 'lux.object'
 require 'camera'
 require 'base.transform'
@@ -64,8 +65,16 @@ function mousereleased(x, y, button)
 end
 
 function update(dt)
+	if love.keyboard.isDown('lctrl') then
+		local mousepos = camera.getMousePosition()
+		for v in pairs(selected) do
+			v:look_at(mousepos)
+		end
+	end
+	
 	if not click_pos then return end
 	size:set(camera.getMousePosition():sub(click_pos))
+
 	local lshift = love.keyboard.isDown('lshift')
 	if size.x < 5 and size.y < 5 then
 		for _,b in ipairs(bodies.character) do

@@ -89,17 +89,19 @@ function character:update( dt )
 	for _,v in pairs(base.body.getAll().character) do
 		if v~=self then
 			if self:intersects(v) then
-				self.speed:add((self.centerX-v.centerX), (self.centerY-v.centerY))
+				local vX, vY = (self.centerX-v.centerX), (self.centerY-v.centerY)
+				self.speed:add(vX, vY)
+				--v.force:add(vX, vY):mult(10)
 				if not self.reactor.running and self.target then
 					if not self.reactor.event then
 						self.reactor.event = function()
-						if self.target then
-							self:move_to(self.target)
+							if self.target then
+								self:move_to(self.target)
+							end
 						end
+						self.reactor.running = false
 					end
-					self.reactor.running = false
-				end
-				self.reactor:start()
+					self.reactor:start()
 				end
 			end
 		end
