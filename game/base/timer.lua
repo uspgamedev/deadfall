@@ -5,16 +5,16 @@ require 'lux.object'
 local timers = {}
 
 timer = lux.object.new {
-	time 	= 0,
+	time 		= 0,
 	dt 		= 1,
 	format	= 1,
-	running = true,
-	repeats = true,
-	event	= nil
+	running  = true,
+	repeats  = true,
+	event		= nil
 }
 
 timer.formats = {
-	ms 	 	= 0.001,
+	ms 	= 0.001,
 	secs 	= 1,
 	mins 	= 60,
 	hours	= 3600
