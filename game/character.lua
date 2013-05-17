@@ -10,6 +10,7 @@ local colors = {
 character = base.body:new {
 	mode = 'fill',
 	team = 0,
+	health = 100,
 	__type = "character"
 }
 
@@ -20,7 +21,7 @@ function character:__init()
 	end
 
 	self.targets  = base.queue:new{}
-	self.reactor	 = base.timer:new {
+	self.reactor  = base.timer:new {
 		dt 		= 0.250,
 		repeats = true,
 		running = false
@@ -28,7 +29,8 @@ function character:__init()
 end
 
 function character:shoot( target )
-	bullet:new{ 
+	bullet:new{
+		owner = self,
 		position = vector:new{self.centerX, self.centerY},
 		target = target 
 	}:register()
@@ -82,8 +84,32 @@ function character:drawextra()
 	end
 end
 
+function character:die()
+	--TODO: Death Sprite animation + corpse registering.
+	self:unregister()
+end
+
 function character:update( dt )
-	if not self.target then return end
+	if self.health <= 0 then self:die() end
+
+	if not self.target then
+		if self.pushed then
+			for _,v in pairs(base.body.getAll().character) do
+				if v~=self then
+					if self:intersects(v) then
+						local vX, vY = (self.centerX-v.centerX), (self.centerY-v.centerY)
+						v.force:set(-vX, -vY):mult(40)
+						v.pushed = true
+					end
+				end
+			end
+			character:__super().update(self, dt)
+			self.speed:reset()
+			self.pushed = nil
+		end
+		return 
+	end
+
 	character:__super().update(self, dt)
 
 	for _,v in pairs(base.body.getAll().character) do
@@ -91,7 +117,8 @@ function character:update( dt )
 			if self:intersects(v) then
 				local vX, vY = (self.centerX-v.centerX), (self.centerY-v.centerY)
 				self.speed:add(vX, vY)
-				--v.force:add(vX, vY):mult(10)
+				v.force:set(-vX, -vY):mult(40)
+				v.pushed = true
 				if not self.reactor.running and self.target then
 					if not self.reactor.event then
 						self.reactor.event = function()

@@ -82,7 +82,6 @@ end
 function body:update(dt)
 	self.speed:add(self.force/self.mass)
 	self.position:add(self.speed*dt)
-	self.speed:sub(self.force/self.mass)
 	self.force:reset()
 end
 
