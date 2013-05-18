@@ -5,9 +5,9 @@ require 'lux.functional'
 
 sprite = lux.object.new {
 	sheet 		 = nil,
-	maxframe		 = 1,
+	maxframe	 = 1,
 	flipped		 = false,
-	dt				 = nil,
+	dt			 = nil,
 	currentFrame = 0
 }
 
@@ -34,18 +34,18 @@ function sprite:stop()
      self.timer:stop()
      self.currentFrame = 0
      self.quad:setViewport(0, 0, self.width, self.width * self.maxframe)
- end
+end
  
- function sprite:start()
-     self.timer:start()
-     self.quad:flip(self.flipped)
- end
+function sprite:start()
+    self.timer:start()
+    self.quad:flip(self.flipped)
+end
  
- function sprite:setflip(flip)
-     self.quad:flip(flip == not self.flipped)
-     self.flipped = flip
- end
+function sprite:setflip(flip)
+    self.quad:flip(flip == not self.flipped)
+    self.flipped = flip
+end
 
- function sprite:draw(x,y)
-     love.graphics.drawq(self.sheet, self.quad, x or self.x, y or self.y)
- end
+function sprite:draw(x,y)
+    love.graphics.drawq(self.sheet, self.quad, x or self.x, y or self.y)
+end

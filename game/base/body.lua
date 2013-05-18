@@ -41,7 +41,7 @@ function body.__init:__newindex(key, v)
 	elseif key == 'centerX' then self.position[1] = v - self.size[1]/2
 	elseif key == 'centerY' then self.position[2] = v - self.size[2]/2
 	elseif key == 'Vx' then self.speed[1] = v
-	elseif key == 'Vy' then self.speed[1] = v
+	elseif key == 'Vy' then self.speed[2] = v
 	elseif key == 'width' then self.size[1] = v
 	elseif key == 'height' then self.size[2] = v
 	elseif key == 'Fx' then self.force[1] = v
