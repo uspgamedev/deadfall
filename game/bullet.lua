@@ -16,10 +16,8 @@ local screenbounds = {
 }
 
 function bullet:__init()
-	local rand = math.random
-	local spread = rand(0, BASE_SPREAD)
-	self.speed = (self.target - self.position):normalize():mult(500):
-		add(rand()>0.5 and spread or -spread)
+	local sx, sy = (math.random() - .5)/4, (math.random() - .5)/4
+	self.speed = (self.target - self.position):normalize():add(sx, sy):normalize():mult(500)
 end
 
 function bullet:draw()
