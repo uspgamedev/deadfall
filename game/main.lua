@@ -1,6 +1,7 @@
 require 'vector'
 require 'character'
 require 'bullet'
+require 'obstacle'
 require 'base.body'
 require 'base.timer'
 require 'selector'
@@ -45,6 +46,23 @@ function love.load()
 		repeats = false,
 		event = function() c:move_to(vector:new{400, 300}) end
 	}
+
+	obstacle:new {
+		position = vector:new{-50, 0},
+		size = vector:new{1000, 50}
+	}:register()
+	obstacle:new {
+		position = vector:new{-50, 0},
+		size = vector:new{50, 800}
+	}:register()
+	obstacle:new {
+		position = vector:new{950, 0},
+		size = vector:new{50, 800}
+	}:register()
+	obstacle:new {
+		position = vector:new{1000, 800},
+		size = vector:new{1000, 50}
+	}:register()
 end
 
 function love.draw()
