@@ -224,3 +224,8 @@ end
 function vector:reset()
 	return self:set(0, 0)
 end
+
+function vector:negate()
+	self[1], self[2] = -self[1], -self[2]
+	return self
+end

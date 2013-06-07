@@ -60,8 +60,8 @@ function love.load()
 		size = vector:new{50, 800}
 	}:register()
 	obstacle:new {
-		position = vector:new{1000, 800},
-		size = vector:new{1000, 50}
+		position = vector:new{-50, 800},
+		size = vector:new{1050, 50}
 	}:register()
 end
 
@@ -78,6 +78,19 @@ function love.draw()
 	selector.draw()
 
 	camera.unset()
+	
+	-- Debug Interface --
+
+	local nBodies = 0
+	for _,v in pairs(bodies) do
+		nBodies = nBodies + #v
+	end
+
+	love.graphics.setColor(255, 255, 255)
+	love.graphics.print("Cam Translation: "..tostring(camera.getPosition()), 5, 0)
+	love.graphics.print("Cam Zoom Scale: "..tostring(camera.getScale()), 5, 15)
+	love.graphics.print("Mouse Position: "..tostring(camera.getMousePosition()), 5, 30)
+	love.graphics.print("Number of Bodies: "..nBodies, 5, 45)
 end
 
 updateFollowers = { base.timer, selector, camera }

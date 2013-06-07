@@ -43,7 +43,9 @@ function mousepressed(x, y, button)
 	elseif button == 'r' then
 		if love.keyboard.isDown('lctrl') then
 			for b in pairs(selected) do
-				b:shoot(pos)
+				--for i=1, 5 do
+					b:shoot(pos)
+				--end
 			end
 		else
 			local dx, dy, grt, len = 0, 0, 0, 0
@@ -53,6 +55,11 @@ function mousepressed(x, y, button)
 				v:move_to(pos+{dx, dy}, lshift)
 				dx = dx + grt + 20
 			end
+		end
+	end
+	if button == 'm' then 
+		for v in pairs(selected) do
+			v.position:set(pos:clone())
 		end
 	end
 end
