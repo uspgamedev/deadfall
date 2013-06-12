@@ -29,24 +29,33 @@ function character:__init()
 end
 
 function character:shoot(target)
-	self.burst = base.timer:new{
-		dt = 0.125,
-		repeats = true,
-		bullets = 0,
-		event = function() 
-			if self.burst.bullets > 3 then
-				self.burst:remove()
-				return
-			end
+	if not self.burst then
+		self.burst = base.timer:new{
+			dt = 0.125,
+			repeats = true,
+			bullets = 0,
+			s_target = target,
+			event = function() 
+				if self.burst.bullets > 3 then
+					self.burst.bullets = 0
+					self.burst:stop()
+					self.burst:remove()
+					return
+				end
 
-			bullet:new{
-				owner = self,
-				position = vector:new{self.centerX, self.centerY},
-				target = target:clone()
-			}:register()
-			self.burst.bullets = self.burst.bullets + 1
-		end
-	}
+				bullet:new{
+					owner = self,
+					position = vector:new{self.centerX, self.centerY},
+					target = self.burst.s_target:clone()
+				}:register()
+				self.burst.bullets = self.burst.bullets + 1
+			end
+		}
+	elseif not self.burst.running then
+		self.burst.s_target = target
+		self.burst:restart()
+		self.burst:register()
+	end
 end
 
 function character:move_to(target, multipath)
