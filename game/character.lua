@@ -120,7 +120,7 @@ function character:update( dt )
 				if v~=self then
 					if self:intersects(v) then
 						local vX, vY = (self.centerX-v.centerX), (self.centerY-v.centerY)
-						v.force:set(-vX, -vY):mult(40)
+						v.temp_force:set(-vX, -vY):mult(40)
 						v.pushed = true
 					end
 				end
@@ -134,23 +134,31 @@ function character:update( dt )
 
 	character:__super().update(self, dt)
 
-	for _,v in pairs(base.body.getAll().character) do
+	local chars = base.body.getAll().character
+	for _,v in pairs(chars) do
 		if v~=self then
 			if self:intersects(v) then
 				local vX, vY = (self.centerX-v.centerX), (self.centerY-v.centerY)
-				self.speed:add(vX, vY)
-				v.force:set(-vX, -vY):mult(40)
-				v.pushed = true
-				if not self.reactor.running and self.target then
-					if not self.reactor.event then
-						self.reactor.event = function()
-							if self.target then
-								self:move_to(self.target)
+				if v.speed:equals(0, 0) then
+					v.force:set(-vX, -vY)
+					character:__super().update(v, dt)
+				else
+					v.speed:reset()
+					self.speed:add(vX, vY)
+					v.temp_force:set(-vX, -vY):mult(40)
+					v.pushed = true
+					if not self.reactor.running and self.target then
+						if not self.reactor.event then
+							self.reactor.event = function()
+								if self.target then
+									self:move_to(self.target)
+								end
 							end
+							self.reactor.running = false
 						end
-						self.reactor.running = false
+						self.reactor:start()
+						self.reactor:register()
 					end
-					self.reactor:start()
 				end
 			end
 		end

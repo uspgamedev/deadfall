@@ -23,7 +23,8 @@ timer.formats = {
 -- Initializes the timer with the corresponding format.
 function timer:__init()
 	self.dt = self.dt*self.format
-	if self.running then self:register() end
+	--if self.running then self:register() end
+	self:register()
 end
 
 -- Resets timer to the given delta time.

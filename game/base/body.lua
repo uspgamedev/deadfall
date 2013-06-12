@@ -18,7 +18,8 @@ body.__init = {
 	position = vector:new{},
 	size 	 = vector:new{0,0},
 	speed	 = vector:new{},
-	force	 = vector:new{}
+	force	 = vector:new{},
+	temp_force = vector:new{}
 }
 
 function body.__init:__index(key)
@@ -32,6 +33,8 @@ function body.__init:__index(key)
 	elseif key == 'height' then return self.size[2]
 	elseif key == 'Fx' then return self.force[1]
 	elseif key == 'Fy' then return self.force[2]
+	elseif key == 'tempFx' then return self.temp_force[1]
+	elseif key == 'tempFy' then return self.temp_force[2]
 	else return getmetatable(self)[key] end
 end
 
@@ -46,6 +49,8 @@ function body.__init:__newindex(key, v)
 	elseif key == 'height' then self.size[2] = v
 	elseif key == 'Fx' then self.force[1] = v
 	elseif key == 'Fy' then self.force[2] = v
+	elseif key == 'tempFx' then self.temp_force[1] = v
+	elseif key == 'tempFy' then self.temp_force[2] = v
 	else rawset(self,key,v) end
 end
 
@@ -81,8 +86,9 @@ end
 
 function body:update(dt)
 	self.speed:add(self.force/self.mass)
+	self.speed:add(self.temp_force/self.mass)
 	self.position:add(self.speed*dt)
-	self.force:reset()
+	self.temp_force:reset()
 end
 
 function body:draw()
