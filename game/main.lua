@@ -7,7 +7,9 @@ require 'base.timer'
 require 'selector'
 require 'camera'
 
+nchars = 0
 bodies = 0
+pause = false
 
 function love.load()
 	bodies = base.body.getAll()
@@ -96,13 +98,17 @@ end
 updateFollowers = { base.timer, selector, camera }
 
 function love.update(dt)
-	for b in base.body.iterate() do
-		b:update(dt)
+	for _,v in ipairs(updateFollowers) do
+		if not (v==base.timer and pause) then
+			v.update(dt)
+		end
 	end
 	
-	for _,v in ipairs(updateFollowers) do
-		v.update(dt)
-	end
+	if pause then return end
+
+	for b in base.body.iterate() do
+		b:update(dt)
+	end	
 end
 
 keyboardFollowers = { camera }
@@ -119,6 +125,7 @@ function love.keyreleased(key)
 	for _,v in ipairs(keyboardFollowers) do
 		v.keyreleased(key)
 	end
+	if key=='p' then pause = not pause end
 end
 
 mouseFollowers = { selector, camera }

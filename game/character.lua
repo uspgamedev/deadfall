@@ -20,6 +20,9 @@ function character:__init()
 		self.radius = nil
 	end
 
+	self.n = nchars
+	nchars = nchars + 1
+
 	self.targets  = base.queue:new{}
 	self.reactor  = base.timer:new {
 		dt 		= 0.250,
@@ -104,6 +107,18 @@ function character:drawextra()
 		love.graphics.line(latX, latY, v[1], v[2])
 		latX, latY = v[1], v[2]
 	end
+
+	if self.derp then
+		love.graphics.setColor(255, 255, 255)
+		love.graphics.circle('fill', self.centerX, self.centerY, 5)
+	end
+
+	love.graphics.setColor(255, 255, 255)
+	love.graphics.print(self.n, self.x, self.y)
+	if self.pushed then
+		local str = self.pushed.__type=='character' and self.pushed.n or 'obst'
+		love.graphics.print(str, self.x, self.y+10) 
+	end
 end
 
 function character:die()
@@ -111,7 +126,7 @@ function character:die()
 	self:unregister()
 end
 
-function character:update( dt )
+function character:update(dt)
 	if self.health <= 0 then self:die() end
 
 	if not self.target then
@@ -120,9 +135,16 @@ function character:update( dt )
 				if v~=self then
 					if self:intersects(v) then
 						local vX, vY = (self.centerX-v.centerX), (self.centerY-v.centerY)
-						v.temp_force:set(-vX, -vY):mult(40)
-						v.pushed = true
+						self.derp = true
+						if self.pushed~=v then v.temp_force:set(-vX, -vY):mult(40)
+						elseif self.pushed.speed:equals(0, 0) then v.temp_force:set(-vX, -vY):mult(40) end
+						v.pushed = self
 					end
+				end
+			end
+			if base.body.getAll().obstacle then
+				for _,v in pairs(base.body.getAll().obstacle) do
+					v:update(dt)
 				end
 			end
 			character:__super().update(self, dt)
@@ -139,26 +161,22 @@ function character:update( dt )
 		if v~=self then
 			if self:intersects(v) then
 				local vX, vY = (self.centerX-v.centerX), (self.centerY-v.centerY)
-				if v.speed:equals(0, 0) then
-					v.force:set(-vX, -vY)
-					character:__super().update(v, dt)
-				else
-					v.speed:reset()
-					self.speed:add(vX, vY)
-					v.temp_force:set(-vX, -vY):mult(40)
-					v.pushed = true
-					if not self.reactor.running and self.target then
-						if not self.reactor.event then
-							self.reactor.event = function()
-								if self.target then
-									self:move_to(self.target)
-								end
+				v.speed:reset()
+				--self.speed:add(vX, vY)
+				v.temp_force:set(-vX, -vY):mult(40)
+				v.pushed = self
+				if not self.reactor.running and self.target then
+					if not self.reactor.event then
+						print "YUP"
+						self.reactor.event = function()
+							if self.target then
+								self:move_to(self.target)
 							end
-							self.reactor.running = false
 						end
-						self.reactor:start()
-						self.reactor:register()
+						self.reactor.running = false
 					end
+					self.reactor:start()
+					self.reactor:register()
 				end
 			end
 		end
