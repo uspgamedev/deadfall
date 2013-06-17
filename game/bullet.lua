@@ -26,7 +26,7 @@ function bullet:draw()
 end
 
 function bullet:update( dt )
-	bullet:__super().update(self, dt)
+	base.body.update(self, dt)
 
 	local bodies = base.body.getAll().character
 	for _,v in pairs(bodies) do

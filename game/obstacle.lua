@@ -5,7 +5,7 @@ obstacle = base.body:new {
 }
 
 function obstacle:update(dt)
-	obstacle:__super().update(self, dt)
+	base.body.update(self, dt)
 
 	local chars = base.body.getAll().character
 	for _,v in pairs(chars) do

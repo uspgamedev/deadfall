@@ -52,7 +52,7 @@ function mousepressed(x, y, button)
 			for v in pairs(selected) do grt = math.max(grt,v.width) len = len + 1 end
 			dx = -(grt+20)*math.floor(len/2)
 			for v in pairs(selected) do
-				v:move_to(pos+{dx, dy}, lshift)
+				v:processPathfinding(pos+{dx, dy}, lshift)
 				dx = dx + grt + 20
 			end
 		end

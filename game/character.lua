@@ -61,6 +61,107 @@ function character:shoot(target)
 	end
 end
 
+function character:processPathfinding( target )
+	mapwidth = 40
+	mapheight = 40
+	local s = math.max(self.width, self.height)
+	local m = {s = s}
+	for i = 1, mapwidth do 
+		m[i] = {} 
+		for j = 1, mapheight do
+			m[i][j] = {i,j}
+		end
+	end
+	map = m
+	local sx, sy, dx, dy
+	for _, c in pairs(base.body.getAll().character) do
+		if c ~= self then 
+			sx, sy = math.floor(c.x/s), math.floor(c.y/s)
+			dx, dy = math.floor((c.x + c.width)/s), math.floor((c.y + c.height)/s)
+			if sx > 0 and sy > 0 and dx < mapwidth and dy < mapheight then
+				for i = sx, dx do
+					for j = sy, dy do
+						m[i][j].obstructs = true
+					end
+				end
+			end
+		end
+	end
+	dx, dy = math.floor(self.centerX/s), math.floor(self.centerY/s)
+	self.currentTile = m[dx][dy]
+	local tile = m[math.floor(target.x/s)][math.floor(target.y/s)]
+	if tile == self.currentTile then return end
+	moveto(self, tile)
+	local path = {}
+	while tile do
+		table.insert(path, tile)
+		tile = tile.parent
+	end
+	self.targets:clear()
+	for i = #path-1, 1, -1 do
+		self:move_to(vector:new{
+			path[i][1]*s + s/2,
+			path[i][2]*s + s/2
+		}, true)
+	end
+end
+
+function moveto(self, tile)
+	local dx, dy = tile[1], tile[2]
+	local open = {}
+	local selftilebak = self.currentTile
+	local ctile = self.currentTile
+	local pathfound = false
+	ctile.G = 0
+	count = 0
+	repeat
+		for i = -1, 1 do
+			for j = -1, 1 do
+				if (i~=0 or j~=0) and ctile[1] + i > 0 and ctile[1] + i <= mapwidth and ctile[2] + j > 0 and ctile[2] + j <= mapheight then
+					local t = map[ctile[1] + i][ctile[2] + j]
+					if t == tile then 
+						t.parent = ctile
+						pathfound = true 
+					end
+
+					if t.obstructs then 
+						open[t] = false
+					end
+
+					if not pathfound and open[t] ~= false then
+						if open[t] == true then
+							local newG = ctile.G + ((i*j) == 0 and 10 or 14)
+							if newG < t.G then
+								t.G = newG
+								t.parent = ctile
+							end
+						else
+							open[t] = true
+							t.parent = ctile
+							t.G = ctile.G + ((i*j) == 0 and 10 or 14)
+							t.H = (math.abs(ctile[1] + i - dx) + math.abs(ctile[2] + j - dy)) * 10
+							t.F = t.G + t. H
+							if t.H == 0 then pathfound = true end
+						end
+					end
+				end
+			end
+		end
+		open[ctile] = false
+		ctile = nil
+		local minF = 100000
+		for k, isOpen in pairs(open) do
+			if isOpen then
+				if k.F < minF then
+					minF  = k.F
+					ctile = k
+				end
+			end
+		end
+		count = count + 1
+	until ctile == nil or pathfound
+end
+
 function character:move_to(target, multipath)
 	if not multipath then
 		self:look_at(target)
@@ -154,7 +255,7 @@ function character:update(dt)
 		return 
 	end
 
-	character:__super().update(self, dt)
+	base.body.update(self, dt)
 
 	local chars = base.body.getAll().character
 	for _,v in pairs(chars) do

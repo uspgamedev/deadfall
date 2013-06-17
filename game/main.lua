@@ -43,7 +43,7 @@ function love.load()
 		team = 2
 	}:register()
 
-	base.timer:new {
+	--[[base.timer:new {
 		dt = 2.50,
 		repeats = false,
 		event = function() c:move_to(vector:new{400, 300}) end
@@ -64,7 +64,7 @@ function love.load()
 	obstacle:new {
 		position = vector:new{-50, 800},
 		size = vector:new{1050, 50}
-	}:register()
+	}:register()]]
 end
 
 function love.draw()
@@ -78,6 +78,19 @@ function love.draw()
 	end
 
 	selector.draw()
+	if map then 
+		for _, v in ipairs(map) do
+			for _, t in ipairs(v) do
+				love.graphics.rectangle('line', t[1]*map.s, t[2]*map.s, map.s, map.s)
+				love.graphics.print(string.format("[%d,%d]",t[1],t[2]), t[1]*map.s + 3, t[2]*map.s + 3)
+				if t.obstructs then
+					love.graphics.setColor(200,0,0,60)
+					love.graphics.rectangle('fill', t[1]*map.s, t[2]*map.s, map.s, map.s)
+					love.graphics.setColor(0, 55, 200, 230)
+				end
+			end
+		end
+	end
 
 	camera.unset()
 	
@@ -87,6 +100,7 @@ function love.draw()
 	for _,v in pairs(bodies) do
 		nBodies = nBodies + #v
 	end
+
 
 	love.graphics.setColor(255, 255, 255)
 	love.graphics.print("Cam Translation: "..tostring(camera.getPosition()), 5, 0)
