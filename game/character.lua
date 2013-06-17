@@ -99,7 +99,7 @@ function character:processPathfinding( target )
 	dx, dy = math.floor(self.centerX/s) + 1, math.floor(self.centerY/s) + 1
 	self.currentTile = m[dx][dy]
 	local tile = m[math.floor(target.x/s) + 1][math.floor(target.y/s) + 1]
-	if tile == self.currentTile then return end
+	if tile == self.currentTile or tile.obstructs then return end
 	moveto(self, tile)
 	local path = {}
 	while tile do
@@ -278,7 +278,6 @@ function character:update(dt)
 				v.pushed = self
 				if not self.reactor.running and self.target then
 					if not self.reactor.event then
-						print "YUP"
 						self.reactor.event = function()
 							if self.target then
 								self:move_to(self.target)
@@ -293,7 +292,7 @@ function character:update(dt)
 		end
 	end
 
-	if self.target:distsqr(self.centerX,self.centerY)<=16 then 
+	if self.target:distsqr(self.centerX,self.centerY)<=25 then 
 		self.target = self.targets:pop()
 		if self.target then self:move_to(self.target) end
 	end 
