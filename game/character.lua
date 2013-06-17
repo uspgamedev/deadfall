@@ -61,6 +61,20 @@ function character:shoot(target)
 	end
 end
 
+function obstruct( c )
+	local sx, sy = math.floor(c.x/map.s) + 1, math.floor(c.y/map.s) + 1
+	sx = math.max(sx, 1)
+	sy = math.max(sy, 1)
+	local dx, dy = math.floor((c.x + c.width)/map.s) + 1, math.floor((c.y + c.height)/map.s) + 1
+	dx = math.min(dx, mapwidth)
+	dy = math.min(dy, mapheight)
+	for i = sx, dx do
+		for j = sy, dy do
+			map[i][j].obstructs = true
+		end
+	end
+end
+
 function character:processPathfinding( target )
 	mapwidth = 40
 	mapheight = 40
@@ -73,23 +87,18 @@ function character:processPathfinding( target )
 		end
 	end
 	map = m
-	local sx, sy, dx, dy
+	local dx, dy
 	for _, c in pairs(base.body.getAll().character) do
 		if c ~= self then 
-			sx, sy = math.floor(c.x/s), math.floor(c.y/s)
-			dx, dy = math.floor((c.x + c.width)/s), math.floor((c.y + c.height)/s)
-			if sx > 0 and sy > 0 and dx < mapwidth and dy < mapheight then
-				for i = sx, dx do
-					for j = sy, dy do
-						m[i][j].obstructs = true
-					end
-				end
-			end
+			obstruct(c)
 		end
 	end
-	dx, dy = math.floor(self.centerX/s), math.floor(self.centerY/s)
+	for _, o in pairs(base.body.getAll().obstacle) do
+		obstruct(o)
+	end
+	dx, dy = math.floor(self.centerX/s) + 1, math.floor(self.centerY/s) + 1
 	self.currentTile = m[dx][dy]
-	local tile = m[math.floor(target.x/s)][math.floor(target.y/s)]
+	local tile = m[math.floor(target.x/s) + 1][math.floor(target.y/s) + 1]
 	if tile == self.currentTile then return end
 	moveto(self, tile)
 	local path = {}
@@ -97,11 +106,12 @@ function character:processPathfinding( target )
 		table.insert(path, tile)
 		tile = tile.parent
 	end
+	self.target = nil
 	self.targets:clear()
 	for i = #path-1, 1, -1 do
 		self:move_to(vector:new{
-			path[i][1]*s + s/2,
-			path[i][2]*s + s/2
+			(path[i][1]-1)*s + s/2,
+			(path[i][2]-1)*s + s/2
 		}, true)
 	end
 end

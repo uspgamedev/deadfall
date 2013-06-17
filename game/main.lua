@@ -60,11 +60,11 @@ function love.load()
 	obstacle:new {
 		position = vector:new{950, 0},
 		size = vector:new{50, 800}
-	}:register()
+	}:register()]]
 	obstacle:new {
 		position = vector:new{-50, 800},
 		size = vector:new{1050, 50}
-	}:register()]]
+	}:register()
 end
 
 function love.draw()
@@ -81,11 +81,11 @@ function love.draw()
 	if map then 
 		for _, v in ipairs(map) do
 			for _, t in ipairs(v) do
-				love.graphics.rectangle('line', t[1]*map.s, t[2]*map.s, map.s, map.s)
-				love.graphics.print(string.format("[%d,%d]",t[1],t[2]), t[1]*map.s + 3, t[2]*map.s + 3)
+				love.graphics.rectangle('line', (t[1]-1)*map.s, (t[2]-1)*map.s, map.s, map.s)
+				love.graphics.print(string.format("[%d,%d]",t[1],t[2]), (t[1]-1)*map.s + 3, (t[2]-1)*map.s + 3)
 				if t.obstructs then
 					love.graphics.setColor(200,0,0,60)
-					love.graphics.rectangle('fill', t[1]*map.s, t[2]*map.s, map.s, map.s)
+					love.graphics.rectangle('fill', (t[1]-1)*map.s, (t[2]-1)*map.s, map.s, map.s)
 					love.graphics.setColor(0, 55, 200, 230)
 				end
 			end
