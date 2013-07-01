@@ -38,7 +38,7 @@ function character:shoot(target)
 			repeats = true,
 			bullets = 0,
 			s_target = target,
-			event = function() 
+			event = function()
 				if self.burst.bullets > 3 then
 					self.burst.bullets = 0
 					self.burst:stop()
@@ -62,31 +62,31 @@ function character:shoot(target)
 end
 
 function obstruct( c )
-	local sx, sy = math.floor(c.x/map.s) + 1, math.floor(c.y/map.s) + 1
+	local sx, sy = math.floor(c.x/mapper.s) + 1, math.floor(c.y/mapper.s) + 1
 	sx = math.max(sx, 1)
 	sy = math.max(sy, 1)
-	local dx, dy = math.floor((c.x + c.width)/map.s) + 1, math.floor((c.y + c.height)/map.s) + 1
-	dx = math.min(dx, mapwidth)
-	dy = math.min(dy, mapheight)
+	local dx, dy = math.floor((c.x + c.width)/mapper.s) + 1, math.floor((c.y + c.height)/mapper.s) + 1
+	dx = math.min(dx, mapperwidth)
+	dy = math.min(dy, mapperheight)
 	for i = sx, dx do
 		for j = sy, dy do
-			map[i][j].obstructs = true
+			mapper[i][j].obstructs = true
 		end
 	end
 end
 
 function character:processPathfinding( target )
-	mapwidth = 40
-	mapheight = 40
+	mapperwidth = 40
+	mapperheight = 40
 	local s = math.max(self.width, self.height)
 	local m = {s = s}
-	for i = 1, mapwidth do 
+	for i = 1, mapperwidth do 
 		m[i] = {} 
-		for j = 1, mapheight do
+		for j = 1, mapperheight do
 			m[i][j] = {i,j}
 		end
 	end
-	map = m
+	mapper = m
 	local dx, dy
 	for _, c in pairs(base.body.getAll().character) do
 		if c ~= self then 
@@ -127,8 +127,8 @@ function moveto(self, tile)
 	repeat
 		for i = -1, 1 do
 			for j = -1, 1 do
-				if (i~=0 or j~=0) and ctile[1] + i > 0 and ctile[1] + i <= mapwidth and ctile[2] + j > 0 and ctile[2] + j <= mapheight then
-					local t = map[ctile[1] + i][ctile[2] + j]
+				if (i~=0 or j~=0) and ctile[1] + i > 0 and ctile[1] + i <= mapperwidth and ctile[2] + j > 0 and ctile[2] + j <= mapperheight then
+					local t = mapper[ctile[1] + i][ctile[2] + j]
 					if t == tile then 
 						t.parent = ctile
 						pathfound = true 

@@ -6,6 +6,7 @@ require 'base.body'
 require 'base.timer'
 require 'selector'
 require 'camera'
+require 'map'
 
 nchars = 0
 bodies = 0
@@ -13,6 +14,10 @@ pause = false
 
 function love.load()
 	bodies = base.body.getAll()
+	map.setMap(map.newMap(
+		vector:new{-100, -100},
+		vector:new{1500, 1500}
+	))
 
 	local c = character:new { 
 		radius = 30,
@@ -70,6 +75,8 @@ end
 function love.draw()
 	camera.set()
 
+	map.getMap():draw()
+
 	for b in base.body.iterate() do
 		love.graphics.push()
 		b:draw()
@@ -78,14 +85,14 @@ function love.draw()
 	end
 
 	selector.draw()
-	if map then 
-		for _, v in ipairs(map) do
+	if mapper then 
+		for _, v in ipairs(mapper) do
 			for _, t in ipairs(v) do
-				love.graphics.rectangle('line', (t[1]-1)*map.s, (t[2]-1)*map.s, map.s, map.s)
-				love.graphics.print(string.format("[%d,%d]",t[1],t[2]), (t[1]-1)*map.s + 3, (t[2]-1)*map.s + 3)
+				love.graphics.rectangle('line', (t[1]-1)*mapper.s, (t[2]-1)*mapper.s, mapper.s, mapper.s)
+				--love.graphics.print(string.format("[%d,%d]",t[1],t[2]), (t[1]-1)*mapper.s + 3, (t[2]-1)*mapper.s + 3)
 				if t.obstructs then
 					love.graphics.setColor(200,0,0,60)
-					love.graphics.rectangle('fill', (t[1]-1)*map.s, (t[2]-1)*map.s, map.s, map.s)
+					love.graphics.rectangle('fill', (t[1]-1)*mapper.s, (t[2]-1)*mapper.s, mapper.s, mapper.s)
 					love.graphics.setColor(0, 55, 200, 230)
 				end
 			end
@@ -103,13 +110,14 @@ function love.draw()
 
 
 	love.graphics.setColor(255, 255, 255)
-	love.graphics.print("Cam Translation: "..tostring(camera.getPosition()), 5, 0)
-	love.graphics.print("Cam Zoom Scale: "..tostring(camera.getScale()), 5, 15)
-	love.graphics.print("Mouse Position: "..tostring(camera.getMousePosition()), 5, 30)
-	love.graphics.print("Number of Bodies: "..nBodies, 5, 45)
+	love.graphics.print("Cam Translation: " .. tostring(camera.getPosition()), 5, 0)
+	love.graphics.print("Cam Zoom Scale: " .. tostring(camera.getScale()), 5, 15)
+	love.graphics.print("Mouse Position: " .. tostring(camera.getMousePosition()), 5, 30)
+	love.graphics.print("Number of Bodies: " .. nBodies, 5, 45)
+	love.graphics.print("FPS: " .. love.timer.getFPS(), 5, 60)
 end
 
-updateFollowers = { base.timer, selector, camera }
+updateFollowers = {base.timer, selector, camera, map.getMap()}
 
 function love.update(dt)
 	for _,v in ipairs(updateFollowers) do

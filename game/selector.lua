@@ -5,6 +5,7 @@ require 'base.body'
 require 'base.timer'
 require 'lux.object'
 require 'camera'
+require 'map'
 require 'base.transform'
 
 local selected = {}
@@ -47,7 +48,7 @@ function mousepressed(x, y, button)
 					b:shoot(pos)
 				--end
 			end
-		else
+		elseif map.getMap():inside(pos) then
 			local dx, dy, grt, len = 0, 0, 0, 0
 			for v in pairs(selected) do grt = math.max(grt,v.width) len = len + 1 end
 			dx = -(grt+20)*math.floor(len/2)
