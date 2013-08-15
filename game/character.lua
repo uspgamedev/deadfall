@@ -1,5 +1,6 @@
 require 'base.body'
 require 'base.transform'
+require 'map'
 
 local colors = {
 	{0, 255, 0},
@@ -29,6 +30,8 @@ function character:__init()
 		repeats = true,
 		running = false
 	}
+
+	self.aim_target = nil
 end
 
 function character:shoot(target)
@@ -76,9 +79,14 @@ function obstruct( c )
 end
 
 function character:processPathfinding( target )
-	mapperwidth = 40
-	mapperheight = 40
-	local s = math.max(self.width, self.height)
+	if not map.getMap():inside(target) then return end
+
+	local s = math.max(self.width, self.height) + 20
+	local curr_map = map.getMap()
+	
+	mapperwidth = curr_map.size.x/s+1
+	mapperheight = curr_map.size.y/s+1
+	
 	local m = {s = s}
 	for i = 1, mapperwidth do 
 		m[i] = {} 
@@ -240,6 +248,13 @@ end
 function character:update(dt)
 	if self.health <= 0 then self:die() end
 
+	if self.aim_target then
+		self:shoot(self.aim_target.position+(self.aim_target.size/2))
+		if self.aim_target.health <= 0 then
+			self.aim_target = nil
+		end
+	end
+
 	if not self.target then
 		if self.pushed then
 			for _,v in pairs(base.body.getAll().character) do
@@ -296,4 +311,9 @@ function character:update(dt)
 		self.target = self.targets:pop()
 		if self.target then self:move_to(self.target) end
 	end 
+end
+
+function character:aim(target)
+	self:look_at(target.position)
+	self.aim_target = target
 end

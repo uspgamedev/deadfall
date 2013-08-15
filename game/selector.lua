@@ -49,6 +49,20 @@ function mousepressed(x, y, button)
 				--end
 			end
 		elseif map.getMap():inside(pos) then
+			local chars = bodies.character
+			local foundTarget = false
+			for _,v in pairs(chars) do
+				if v:is_inside(pos.x, pos.y) then
+					for k,_ in pairs(selected) do
+						if k.team ~= v.team then
+							k:aim(v)
+							foundTarget = true
+						end
+					end
+					if foundTarget then return end
+				end
+			end
+			
 			local dx, dy, grt, len = 0, 0, 0, 0
 			for v in pairs(selected) do grt = math.max(grt,v.width) len = len + 1 end
 			dx = -(grt+20)*math.floor(len/2)

@@ -38,14 +38,15 @@ function obstacle:update(dt)
 	if bullets then
 		for _,v in pairs(bullets) do
 			if self:intersects(v) then
-				local vX, vY
+				v:unregister()
+				--[[local vX, vY
 				if self.size[1] > self.size[2] then
 					vX, vY = 0, self.centerY-v.centerY
 				else
 					vX, vY = self.centerX-v.centerX, 0
 				end
 
-				v.speed:mult(vX>0 and -1 or 1, vY>0 and -1 or 1) 
+				v.speed:mult(vX>0 and -1 or 1, vY>0 and -1 or 1)]] 
 			end
 		end
 	end

@@ -84,6 +84,11 @@ function setTranslation(x, y)
 	position:set(x, y)
 end
 
+function setScale(x, y)
+	scale:set(x, y)
+	size:set(SCREEN_WIDTH, SCREEN_HEIGHT):mult(scale)
+end
+
 function rotate(theta)
 	angle = angle + theta
 end

@@ -15,7 +15,7 @@ pause = false
 function love.load()
 	bodies = base.body.getAll()
 	map.setMap(map.newMap(
-		vector:new{-100, -100},
+		vector:new{0, 0},
 		vector:new{1500, 1500}
 	))
 
@@ -67,9 +67,11 @@ function love.load()
 		size = vector:new{50, 800}
 	}:register()]]
 	obstacle:new {
-		position = vector:new{-50, 800},
+		position = vector:new{0, 800},
 		size = vector:new{1050, 50}
 	}:register()
+
+	camera.setScale(2, 2)
 end
 
 function love.draw()

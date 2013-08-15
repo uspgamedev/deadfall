@@ -2,8 +2,8 @@ require 'base.body'
 require 'camera'
 require 'base.timer'
 
-local BASE_DAM = 60
-local BASE_SPREAD = 200
+local BASE_DAM = 10
+local BASE_SPREAD = 1.5
 
 bullet = base.body:new {
 	owner = nil,
@@ -16,7 +16,7 @@ local screenbounds = {
 }
 
 function bullet:__init()
-	local sx, sy = (math.random() - .5)/4, (math.random() - .5)/4
+	local sx, sy = ((math.random() - .5)/4)*BASE_SPREAD, ((math.random() - .5)/4)*BASE_SPREAD
 	self.speed = (self.target - self.position):normalize():add(sx, sy):normalize():mult(500)
 end
 
@@ -25,7 +25,7 @@ function bullet:draw()
 	love.graphics.circle('fill', self.x, self.y, 4)
 end
 
-function bullet:update( dt )
+function bullet:update(dt)
 	base.body.update(self, dt)
 
 	local bodies = base.body.getAll().character
