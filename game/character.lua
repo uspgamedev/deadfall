@@ -1,6 +1,7 @@
 require 'base.body'
 require 'base.transform'
 require 'map'
+require 'gun'
 
 local colors = {
 	{0, 255, 0},
@@ -31,37 +32,15 @@ function character:__init()
 		running = false
 	}
 
+	self.gun = gun:new {
+		owner = self
+	}:register()
+
 	self.aim_target = nil
 end
 
 function character:shoot(target)
-	if not self.burst then
-		self.burst = base.timer:new{
-			dt = 0.125,
-			repeats = true,
-			bullets = 0,
-			s_target = target,
-			event = function()
-				if self.burst.bullets > 3 then
-					self.burst.bullets = 0
-					self.burst:stop()
-					self.burst:remove()
-					return
-				end
-
-				bullet:new{
-					owner = self,
-					position = vector:new{self.centerX, self.centerY},
-					target = self.burst.s_target:clone()
-				}:register()
-				self.burst.bullets = self.burst.bullets + 1
-			end
-		}
-	elseif not self.burst.running then
-		self.burst.s_target = target
-		self.burst:restart()
-		self.burst:register()
-	end
+	self.gun:shoot(target)
 end
 
 function obstruct( c )
@@ -242,6 +221,7 @@ end
 
 function character:die()
 	--TODO: Death Sprite animation + corpse registering.
+	self.gun:drop()
 	self:unregister()
 end
 
