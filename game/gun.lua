@@ -16,11 +16,16 @@ function gun:__init()
 	}
 	self.size = vector:new {40, 5}
 
-	self.floatY = 10
+	self.floatY = 0
+	self.floatDiff = 0.0008
 end
 
 function gun:drop()
 	self.owner = nil
+end
+
+function gun:pick_up(new_owner)
+	self.owner = new_owner
 end
 
 function gun:draw()
@@ -67,17 +72,14 @@ end
 
 function gun:update(dt)
 	if not self.owner then
-		local diff = dt
 		self.angle = 0
 
-		if self.floatY > 5 then
-			diff = -dt
-			self.floatY = 0
-		elseif self.floatY < -5 then
-			diff = dt
-			self.floatY = 0
+		if self.floatY > 0.1 or self.floatY < -0.1 then
+			self.floatDiff = -self.floatDiff
 		end
-		self.floatY = self.floatY + diff
+
+		self.floatY = self.floatY + self.floatDiff
+
 		self.position:add(0, self.floatY)
 	else
 		self.position:set(self.owner.position[1]+self.owner.size[1]/2,

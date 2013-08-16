@@ -46,6 +46,15 @@ end
 
 function map:update(dt)
 	for _,v in pairs(self.bounds) do self.bounds:update() end
+
+	if mapper then
+		for _,v in pairs(base.body.getAll().character) do
+			obstruct(v)
+		end
+		for _,v in pairs(base.body.getAll().obstacle) do
+			obstruct(v)
+		end
+	end
 end
 
 function map:draw()

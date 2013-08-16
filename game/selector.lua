@@ -16,6 +16,9 @@ local outer_color 	= {0, 55, 200, 230}
 local inner_color 	= {0, 55, 200,  60}
 local line_color	= outer_color
 
+-- Time related
+local time = 1
+
 function draw()
 	if click_pos then
 		love.graphics.setColor(inner_color)
@@ -86,6 +89,18 @@ function mousereleased(x, y, button)
 	end
 end
 
+function keypressed(key, code)
+	if key==' ' then
+		time = 0.25
+	end
+end
+
+function keyreleased(key)
+	if key==' ' then
+		time = 1
+	end
+end
+
 function update(dt)
 	if love.keyboard.isDown('lctrl') then
 		local mousepos = camera.getMousePosition()
@@ -137,6 +152,9 @@ function restrict(b, team)
 		end
 	end
 end
+
+function getTime() return time end
+function setTime(dtime) time = dtime end
 
 function length(t)
 	local i=0

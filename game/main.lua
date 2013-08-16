@@ -110,7 +110,6 @@ function love.draw()
 		nBodies = nBodies + #v
 	end
 
-
 	love.graphics.setColor(255, 255, 255)
 	love.graphics.print("Cam Translation: " .. tostring(camera.getPosition()), 5, 0)
 	love.graphics.print("Cam Zoom Scale: " .. tostring(camera.getScale()), 5, 15)
@@ -122,6 +121,8 @@ end
 updateFollowers = {base.timer, selector, camera, map.getMap()}
 
 function love.update(dt)
+	dt = dt*selector.getTime()
+
 	for _,v in ipairs(updateFollowers) do
 		if not (v==base.timer and pause) then
 			v.update(dt)
@@ -133,9 +134,15 @@ function love.update(dt)
 	for b in base.body.iterate() do
 		b:update(dt)
 	end	
+
+	if mapper then
+		for _,v in pairs(base.body.getAll().character) do
+			obstruct(v)
+		end
+	end
 end
 
-keyboardFollowers = { camera }
+keyboardFollowers = {selector, camera}
 
 function love.keypressed(key, code)
 	if love.keyboard.isDown('lalt') and love.keyboard.isDown('f4') then love.event.push('quit') end
@@ -152,7 +159,7 @@ function love.keyreleased(key)
 	if key=='p' then pause = not pause end
 end
 
-mouseFollowers = { selector, camera }
+mouseFollowers = {selector, camera}
 
 function love.mousepressed(x, y, button)
 	for _,v in ipairs(mouseFollowers) do
